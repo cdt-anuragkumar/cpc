@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta-name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPCMS</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- External CSS File -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <button class="menu-btn" id="menuBtn" onclick="toggleSidebar()">☰</button>
+            <div class="logo-header">
+                <div class="logo-icon-small">CPC</div>
+                <div class="logo-text-small">
+                    <h2>CONCEPTS CLASSES</h2>
+                    <p>Bhakharuan More, Daudnagar</p>
+                </div>
+            </div>
+        </div>
+        <div class="header-right">
+            <a href="#" class="nav-link active" onclick="showSection('home'); return false;">Home</a>
+            <a href="#" class="nav-link" onclick="showSection('gallery'); return false;">Gallery</a>
+            <a href="#" class="nav-link" onclick="showSection('about'); return false;">About</a>
+            <a href="#" class="nav-link" onclick="openModal('contact'); return false;">Contact</a>
+            <div class="user-profile" onclick="openModal('founder')">
+                <div class="user-avatar">AK</div>
+                <div class="user-info">
+                    <h4>FOUNDER</h4>
+                    <p>Abhishek Kumar</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="background">
+        <!-- Main Container -->
+        <div class="main-container">
+            <!-- Sidebar Overlay -->
+            <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+            
+            <!-- Sidebar -->
+            <div class="sidebar" id="sidebar">
+                <div style="padding: 0 30px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #E8E8E8; margin-bottom: 20px;">
+                    <h3 style="font-size: 18px; font-weight: 700; color: var(--dark);">Menu</h3>
+                    <button onclick="toggleSidebar()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--dark); padding: 5px;">✕</button>
+                </div>
+                <nav class="nav-section">
+                    <a href="#" class="nav-item">
+                        <span>Academics</span>
+                        <span class="arrow">›</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span>Accounts</span>
+                        <span class="arrow">›</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span>Administration</span>
+                        <span class="arrow">›</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span>E Library</span>
+                        <span class="arrow">›</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span>Examination</span>
+                        <span class="arrow">›</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span>Hostel</span>
+                        <span class="arrow">›</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span>Library</span>
+                        <span class="arrow">›</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content">
+                <!-- Home Section -->
+                <div id="home" class="section active">
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <div class="action-card primary">
+                        <div class="action-card-top">
+                            <div class="icon-large">📌</div>
+                            <div class="action-card-content">
+                                <h3>Messages</h3>
+                                <p>Announcements</p>
+                            </div>
+                        </div>
+                        <a href="voterid.pdf" target="_blank" class="btn-action">View Details</a>
+                    </div>
+
+                    <div class="action-card secondary">
+                        <div class="action-card-top">
+                            <div class="icon-large">👥</div>
+                            <div class="action-card-content">
+                                <h3>Time Table</h3>
+                                <p>Schedules and Timings</p>
+                            </div>
+                        </div>
+                        <a href="voterid.pdf" target="_blank" class="btn-action">View Details</a>
+                    </div>
+
+                    <div class="action-card success">
+                        <div class="action-card-top">
+                            <div class="icon-large">📚</div>
+                            <div class="action-card-content">
+                                <h3>Study Materials</h3>
+                                <p>Study resources</p>
+                            </div>
+                        </div>
+                        <a href="voterid.pdf" target="_blank" class="btn-action">View Details</a>
+                    </div>
+
+                    <div class="action-card info">
+                        <div class="action-card-top">
+                            <div class="icon-large">📊</div>
+                            <div class="action-card-content">
+                                <h3>Results</h3>
+                                <p>Show Results</p>
+                            </div>
+                        </div>
+                        <a href="voterid.pdf" target="_blank" class="btn-action">View Details</a>
+                    </div>
+
+                    <div class="action-card warning">
+                        <div class="action-card-top">
+                            <div class="icon-large">📅</div>
+                            <div class="action-card-content">
+                                <h3>Exams</h3>
+                                <p>Check exam links</p>
+                            </div>
+                        </div>
+                        <a href="voterid.pdf" target="_blank" class="btn-action">View Details</a>
+                    </div>
+
+                    <div class="action-card warning">
+                        <div class="action-card-top">
+                            <div class="icon-large">🎓</div>
+                            <div class="action-card-content">
+                                <h3>Admissions</h3>
+                                <p>Check admission details</p>
+                            </div>
+                        </div>
+                        <a href="voterid.pdf" target="_blank" class="btn-action">View Details</a>
+                    </div>
+
+                    <div class="action-card warning" onclick="openModal('contact')">
+                        <div class="action-card-top">
+                            <div class="icon-large">📞</div>
+                            <div class="action-card-content">
+                                <h3>Contact Us</h3>
+                                <p>Get in touch with Us</p>
+                            </div>
+                        </div>
+                        <button class="btn-action">View Details</button>
+                    </div>
+                </div>
+                <!-- About and Headlines Container -->
+                <div class="about-headlines-container">
+                    <div class="middlebox-section">
+                        <h2>ABOUT CPC:</h2>
+                        <h4>
+                          Concepts Classes Daudnagar is a leading institute for students from Classes 6 to 12 and JEE/NEET aspirants. Founded by **Abhishek Kumar**, it follows the effective **Kota teaching pattern**, focusing on discipline, smart study, and results. With experienced faculty, the institute ensures strong concepts, regular practice, doubt-clearing, and weekly tests. For junior classes, it builds a solid academic foundation. 
+                          <br><br><br>
+                          कॉन्सेप्ट्स क्लासेज़ दाउदनगर कक्षा 6 से 12 तक के छात्रों और JEE/NEET अभ्यर्थियों के लिए एक प्रमुख संस्थान है। **अभिषेक कुमार** द्वारा स्थापित यह संस्थान प्रभावी **कोटा टीचिंग पैटर्न** का पालन करता है, जो अनुशासन, स्मार्ट स्टडी और परिणामों पर केंद्रित है। अनुभवी फैकल्टी के साथ यह मज़बूत कॉन्सेप्ट, नियमित अभ्यास, डाउट-क्लियरिंग और साप्ताहिक टेस्ट सुनिश्चित करता है। जूनियर कक्षाओं के लिए यह मजबूत शैक्षणिक आधार बनाता है।
+
+                        </h4>
+                    </div>
+
+                    <div class="headlines-section">
+                        <h2>CPC HEADLINES:</h2>
+                        <div class="headlines-content">
+                            <div class="headline-item">
+                                <h3>🏆 JEE Main 2025 Results</h3>
+                                <p>Our students achieved outstanding results with 95% success rate in JEE Main 2025</p>
+                            </div>
+                            <div class="headline-item">
+                                <h3>🎓 NEET 2025 Toppers</h3>
+                                <p>8 students secured ranks under 1000 in NEET 2025</p>
+                            </div>
+                            <div class="headline-item">
+                                <h3>📚 New Study Material Launch</h3>
+                                <p>Updated study materials for 2026 board exams now available</p>
+                            </div>
+                            <div class="headline-item">
+                                <h3>🎯 Scholarship Program</h3>
+                                <p>Merit-based scholarships available for deserving students</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teachers  -->
+                <div class="teacher-section">
+                    <h4>TEACHERS:</h4>
+                    <button class="btn-teacher" onclick="openTeacherModal('physics')">Physics</button>
+                    <button class="btn-teacher" onclick="openTeacherModal('chemistry')">Chemistry</button>
+                    <button class="btn-teacher" onclick="openTeacherModal('biology')">Biology</button>
+                    <button class="btn-teacher" onclick="openTeacherModal('mathematics')">Mathematics</button>
+                    <button class="btn-teacher" onclick="openTeacherModal('english')">English</button>
+                    <button class="btn-teacher" onclick="openTeacherModal('social')">Social Studies</button>
+                    <button class="btn-teacher toppers-btn" onclick="openToppersModal()">🏆 Toppers</button>
+                </div>
+                </div>
+
+                <!-- Gallery Section -->
+                <div id="gallery" class="section">
+                    <div class="gallery-container">
+                        <h1 class="gallery-page-title">GALLERY</h1>
+                        <p class="gallery-page-subtitle">.</p>
+
+                        <div class="gallery-grid">
+                            <div class="gallery-item">
+                                <div class="gallery-image event1">
+                                    <img src="cpcimg.png">     
+                                </div>
+                                <div class="gallery-info">
+                                    <h3>Annual Function 2025</h3>
+                                    <p>Celebrate achievements and performances from our students at the annual function.</p>
+                                </div>
+                            </div>
+
+                            <div class="gallery-item">
+                                <div class="gallery-image event2">🏆</div>
+                                <div class="gallery-info">
+                                    <h3>Student Awards</h3>
+                                    <p>Recognition of outstanding performers and achievers in academics and sports.</p>
+                                </div>
+                            </div>
+
+                            <div class="gallery-item">
+                                <div class="gallery-image event3">🔬</div>
+                                <div class="gallery-info">
+                                    <h3>Science Lab Activities</h3>
+                                    <p>Hands-on experiments and practical sessions for science students.</p>
+                                </div>
+                            </div>
+
+                            <div class="gallery-item">
+                                <div class="gallery-image event4">📚</div>
+                                <div class="gallery-info">
+                                    <h3>Study Sessions</h3>
+                                    <p>Interactive classroom learning and doubt-clearing sessions.</p>
+                                </div>
+                            </div>
+
+                            <div class="gallery-item">
+                                <div class="gallery-image event5">⚽</div>
+                                <div class="gallery-info">
+                                    <h3>Sports Events</h3>
+                                    <p>Inter-school competitions and sports day celebrations.</p>
+                                </div>
+                            </div>
+
+                            <div class="gallery-item">
+                                <div class="gallery-image event6">🎓</div>
+                                <div class="gallery-info">
+                                    <h3>Graduation Ceremony</h3>
+                                    <p>Celebrating the success and future of our graduating students.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Section -->
+                <div id="about" class="section">
+                    <div class="about-container">
+                        <h1 class="about-page-title">ABOUT CONCEPTS CLASSES</h1>
+
+                        <div class="about-section">
+                            <h2>🎓 Our Mission</h2>
+                            <p>
+                                Concepts Classes Daudnagar is a leading coaching centre dedicated to nurturing academic excellence for students from Class 6 to 12, along with aspirants preparing for JEE and NEET. Our mission is to provide quality education, consistent motivation, and a structured path toward academic success.
+                            </p>
+                        </div>
+
+                        <div class="about-section">
+                            <h2>📚 About Us</h2>
+                            <p>
+                                Founded by <strong>Abhishek Kumar</strong>, Concepts Classes follows the highly effective <strong>Kota teaching pattern</strong>, known for its disciplined approach, smart study techniques, and result-oriented methodology. With a team of experienced faculty, we focus on strengthening foundational concepts, regular practice, and personalized doubt-clearing sessions.
+                            </p>
+                            <p>
+                                The institute provides structured study materials, weekly tests, and performance analysis to help students track their progress effectively. For junior classes, we build strong fundamentals in Maths, Science, and logical thinking, while senior students receive specialized guidance for board exams and competitive entrance tests.
+                            </p>
+                        </div>
+
+                        <div class="about-section">
+                            <h2>✨ What We Offer</h2>
+                            <ul>
+                                <li><strong>Expert Faculty:</strong> Experienced teachers dedicated to student success</li>
+                                <li><strong>Structured Study Materials:</strong> Comprehensive notes and resources</li>
+                                <li><strong>Weekly Tests:</strong> Regular assessments to track progress</li>
+                                <li><strong>Personalized Doubt Clearing:</strong> One-on-one guidance sessions</li>
+                                <li><strong>Performance Analysis:</strong> Detailed feedback and improvement strategies</li>
+                                <li><strong>JEE & NEET Preparation:</strong> Specialized coaching for competitive exams</li>
+                                <li><strong>Board Exam Guidance:</strong> Comprehensive preparation for Class 10 and 12</li>
+                            </ul>
+                        </div>
+
+                        <div class="about-section">
+                            <h2>🎯 Our Approach</h2>
+                            <div class="about-features-grid">
+                                <div class="about-feature-card">
+                                    <h3>Disciplined Teaching</h3>
+                                    <p>Following the proven Kota teaching pattern with structured methodology</p>
+                                </div>
+                                <div class="about-feature-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                    <h3>Smart Techniques</h3>
+                                    <p>Advanced learning strategies to maximize understanding and retention</p>
+                                </div>
+                                <div class="about-feature-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                                    <h3>Result Oriented</h3>
+                                    <p>Focus on delivering outstanding academic results and achievements</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="about-section">
+                            <h2>🏫 Location</h2>
+                            <p>
+                                <strong>Address:</strong> Bhakharuan More, Daudnagar<br>
+                                We are conveniently located and easily accessible for students from all parts of the city.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <h3>CREATED BY: ANURAG KUMAR<br>[EX-CPCIAN]</h3>
+    </div>
+
+    <!-- Contact Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📞 Contact Information</h2>
+                <button class="close-btn" onclick="closeModal('contact')">&times;</button>
+            </div>
+            <div class="modal-body contact-info">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Phone</label>
+                        <div class="value">+91 8863994647</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Email</label>
+                        <div class="value">abhishekcpcdaudnagar@gmail.com</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Address</label>
+                        <div class="value">Bhakharuan More, Daudnagar</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Office Hours</label>
+                        <div class="value">Mon-Sat: 9:00 AM - 6:00 PM</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Website</label>
+                        <div class="value">www.conceptsclasses.edu</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Principal</label>
+                        <div class="value">Abhishek Raj</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Founder Modal -->
+    <div id="founderModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>👨‍💼 Founder Profile</h2>
+                <button class="close-btn" onclick="closeModal('founder')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="founder-profile">
+                    <div class="teacher-photo-container" onclick="document.getElementById('social-teacher1-upload').click()">
+                            <img id="social-teacher1-img" class="teacher-photo" style="display: none;" src="" alt="Teacher Photo">
+                            <img src="founderr.png">    
+                        </div>
+                    <div class="founder-name-large">Abhishek Kumar</div>
+                    <div class="founder-title-large">Founder & Director</div>
+                    
+                    <div class="founder-details-grid">
+                        <div class="founder-detail-card">
+                            <label>📧 Email</label>
+                            <div class="value">abhishek.kumar@concepts.edu</div>
+                        </div>
+                        <div class="founder-detail-card">
+                            <label>📞 Phone</label>
+                            <div class="value">+91 8863994647</div>
+                        </div>
+                        <div class="founder-detail-card">
+                            <label>🎓 Qualification</label>
+                            <div class="value">M.Ed, B.Ed</div>
+                        </div>
+                        <div class="founder-detail-card">
+                            <label>⏰ Experience</label>
+                            <div class="value">10+ Years in Education</div>
+                        </div>
+                        <div class="founder-detail-card">
+                            <label>🏢 Institution</label>
+                            <div class="value">Concepts Classes (CPC)</div>
+                        </div>
+                        <div class="founder-detail-card">
+                            <label>📍 Location</label>
+                            <div class="value">Bhakharuan More, Daudnagar</div>
+                        </div>
+                    </div>
+
+                    <div class="social-media-section">
+                        <h3>Connect on Social Media</h3>
+                        <div class="social-links">
+                            <a href="https://facebook.com/abhishek.raj.437105" target="_blank" class="social-link facebook" title="Facebook">
+                                <i class="fab fa-facebook-f" style="color: white;"></i>
+                            </a>
+                            <!-- <a href="https://twitter.com" target="_blank" class="social-link twitter" title="Twitter">
+                                <i class="fab fa-twitter" style="color: white;"></i>
+                            </a>
+                            <a href="https://linkedin.com" target="_blank" class="social-link linkedin" title="LinkedIn">
+                                <i class="fab fa-linkedin-in" style="color: white;"></i>
+                            </a> -->
+                            <a href="https://www.instagram.com/abhishek_educator/" target="_blank" class="social-link instagram" title="Instagram">
+                                <i class="fab fa-instagram" style="color: white;"></i>
+                            </a>
+                            <a href="https://wa.me/918863994647" target="_blank" class="social-link whatsapp" title="WhatsApp">
+                                <i class="fab fa-whatsapp" style="color: white;"></i>
+                            </a>
+                            <a href="mailto:abhishekcpcdaudnagar@gmail.com" class="social-link email" title="Email">
+                                <i class="fas fa-envelope" style="color: white;"></i>
+                            </a>
+                            <a href="https://www.youtube.com/channel/UCgSmfxQrwCaNEtGHbWRcPfA" target="_blank" class="social-link youtube" title="YouTube">
+                                <i class="fab fa-youtube" style="color: white;"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Physics Teacher Modal -->
+    <div id="physicsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🔬 Physics Department Teachers</h2>
+                <button class="close-btn" onclick="closeTeacherModal('physics')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="teacher-grid">
+                    <div class="teacher-card">    
+                        <div class="teacher-photo-container" onclick="document.getElementById('social-teacher1-upload').click()">
+                            <img id="social-teacher1-img" class="teacher-photo" style="display: none;" src="" alt="Teacher Photo">
+                            <img src="founderr.png">    
+                        </div>
+                        <div class="teacher-info">
+                            <div class="teacher-name">Abhishek Raj</div>
+                            <div class="teacher-subject">Senior Physics Teacher</div>
+                            <div class="teacher-details">
+                                <div class="teacher-detail-item">
+                                    <strong>📧 Email:</strong>
+                                    <span>abhishekcpcdaudnagar@gmail.com</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>📞 Phone:</strong>
+                                    <span>+91 8863994647</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>🎓 Qualification:</strong>
+                                    <span>B.Tech</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>⏰ Experience:</strong>
+                                    <span>10+ Years</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="teacher-card">
+                        <div class="teacher-photo-container" onclick="document.getElementById('social-teacher1-upload').click()">
+                            <img id="social-teacher1-img" class="teacher-photo" style="display: none;" src="" alt="Teacher Photo">
+                            <img src="cpcimg.png">    
+                        </div>
+                        <div class="teacher-info">
+                            <div class="teacher-name">Prof. Sunita Sharma</div>
+                            <div class="teacher-subject">Physics Teacher</div>
+                            <div class="teacher-details">
+                                <div class="teacher-detail-item">
+                                    <strong>📧 Email:</strong>
+                                    <span>sunita.s@concepts.edu</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>📞 Phone:</strong>
+                                    <span>+91 98765 43211</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>🎓 Qualification:</strong>
+                                    <span>M.Sc Physics</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>⏰ Experience:</strong>
+                                    <span>10 Years</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="attendance-options">
+                    <button class="btn-attendance" onclick="viewAttendance('physics')">View Attendance</button>
+                    <button class="btn-attendance" onclick="markAttendancePrompt()">Mark Attendance</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chemistry Teacher Modal -->
+    <div id="chemistryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🧪 Chemistry Department Teachers</h2>
+                <button class="close-btn" onclick="closeTeacherModal('chemistry')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="teacher-grid">
+                    <div class="teacher-card">
+                        <div class="teacher-photo-container" onclick="document.getElementById('social-teacher1-upload').click()">
+                            <img id="social-teacher1-img" class="teacher-photo" style="display: none;" src="" alt="Teacher Photo">
+                            <img src="cpcimg.png">    
+                        </div>
+                        <div class="teacher-info">
+                            <div class="teacher-name">Dr. Amit Singh</div>
+                            <div class="teacher-subject">Senior Chemistry Teacher</div>
+                            <div class="teacher-details">
+                                <div class="teacher-detail-item">
+                                    <strong>📧 Email:</strong>
+                                    <span>amit.s@concepts.edu</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>📞 Phone:</strong>
+                                    <span>+91 98765 43212</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>🎓 Qualification:</strong>
+                                    <span>Ph.D Chemistry</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>⏰ Experience:</strong>
+                                    <span>12 Years</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="attendance-options">
+                    <button class="btn-attendance" onclick="viewAttendance('chemistry')">View Attendance</button>
+                    <button class="btn-attendance" onclick="markAttendancePrompt()">Mark Attendance</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biology Teacher Modal -->
+    <div id="biologyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🧬 Biology Department Teachers</h2>
+                <button class="close-btn" onclick="closeTeacherModal('biology')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="teacher-grid">
+                    <div class="teacher-card">
+                        <div class="teacher-photo-container" onclick="document.getElementById('social-teacher1-upload').click()">
+                            <img id="social-teacher1-img" class="teacher-photo" style="display: none;" src="" alt="Teacher Photo">
+                            <img src="cpcimg.png">    
+                        </div>
+                        <div class="teacher-info">
+                            <div class="teacher-name">Dr. Priya Verma</div>
+                            <div class="teacher-subject">Senior Biology Teacher</div>
+                            <div class="teacher-details">
+                                <div class="teacher-detail-item">
+                                    <strong>📧 Email:</strong>
+                                    <span>priya.v@concepts.edu</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>📞 Phone:</strong>
+                                    <span>+91 98765 43213</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>🎓 Qualification:</strong>
+                                    <span>M.Sc Botany, B.Ed</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>⏰ Experience:</strong>
+                                    <span>14 Years</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="attendance-options">
+                    <button class="btn-attendance" onclick="viewAttendance('biology')">View Attendance</button>
+                    <button class="btn-attendance" onclick="markAttendancePrompt()">Mark Attendance</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mathematics Teacher Modal -->
+    <div id="mathematicsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📐 Mathematics Department Teachers</h2>
+                <button class="close-btn" onclick="closeTeacherModal('mathematics')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="teacher-grid">
+                    <div class="teacher-card">
+                        <div class="teacher-photo-container" onclick="document.getElementById('social-teacher1-upload').click()">
+                            <img id="social-teacher1-img" class="teacher-photo" style="display: none;" src="" alt="Teacher Photo">
+                            <img src="cpcimg.png">    
+                        </div>
+                        <div class="teacher-info">
+                            <div class="teacher-name">Prof. Vikram Pandey</div>
+                            <div class="teacher-subject">Senior Mathematics Teacher</div>
+                            <div class="teacher-details">
+                                <div class="teacher-detail-item">
+                                    <strong>📧 Email:</strong>
+                                    <span>vikram.p@concepts.edu</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>📞 Phone:</strong>
+                                    <span>+91 98765 43214</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>🎓 Qualification:</strong>
+                                    <span>M.Sc Mathematics</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>⏰ Experience:</strong>
+                                    <span>18 Years</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="teacher-card">
+                        <div class="teacher-photo-container" onclick="document.getElementById('social-teacher1-upload').click()">
+                            <img id="social-teacher1-img" class="teacher-photo" style="display: none;" src="" alt="Teacher Photo">
+                            <img src="cpcimg.png">    
+                        </div>
+                        <div class="teacher-info">
+                            <div class="teacher-name">Dr. Anita Joshi</div>
+                            <div class="teacher-subject">Mathematics Teacher</div>
+                            <div class="teacher-details">
+                                <div class="teacher-detail-item">
+                                    <strong>📧 Email:</strong>
+                                    <span>anita.j@concepts.edu</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>📞 Phone:</strong>
+                                    <span>+91 98765 43215</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>🎓 Qualification:</strong>
+                                    <span>Ph.D Mathematics</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>⏰ Experience:</strong>
+                                    <span>11 Years</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="attendance-options">
+                    <button class="btn-attendance" onclick="viewAttendance('mathematics')">View Attendance</button>
+                    <button class="btn-attendance" onclick="markAttendancePrompt()">Mark Attendance</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- English Teacher Modal -->
+    <div id="englishModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📚 English Department Teachers</h2>
+                <button class="close-btn" onclick="closeTeacherModal('english')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="teacher-grid">
+                    <div class="teacher-card">
+                        <div class="teacher-photo-container" onclick="document.getElementById('social-teacher1-upload').click()">
+                            <img id="social-teacher1-img" class="teacher-photo" style="display: none;" src="" alt="Teacher Photo">
+                            <img src="cpcimg.png">    
+                        </div>
+                        <div class="teacher-info">
+                            <div class="teacher-name">Ms. Sarah Johnson</div>
+                            <div class="teacher-subject">Senior English Teacher</div>
+                            <div class="teacher-details">
+                                <div class="teacher-detail-item">
+                                    <strong>📧 Email:</strong>
+                                    <span>sarah.j@concepts.edu</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>📞 Phone:</strong>
+                                    <span>+91 98765 43216</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>🎓 Qualification:</strong>
+                                    <span>M.A English, B.Ed</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>⏰ Experience:</strong>
+                                    <span>13 Years</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="attendance-options">
+                    <button class="btn-attendance" onclick="viewAttendance('english')">View Attendance</button>
+                    <button class="btn-attendance" onclick="markAttendancePrompt()">Mark Attendance</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Social Studies Teacher Modal -->
+    <div id="socialModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🌍 Social Studies Department Teachers</h2>
+                <button class="close-btn" onclick="closeTeacherModal('social')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="teacher-grid">
+                    <div class="teacher-card">
+                        <div class="teacher-photo-container" onclick="document.getElementById('social-teacher1-upload').click()">
+                            <img id="social-teacher1-img" class="teacher-photo" style="display: none;" src="" alt="Teacher Photo">
+                            <img src="cpcimg.png">    
+                        </div>
+                            <div class="teacher-info">
+                            <div class="teacher-name">Prof. Ramesh Gupta</div>
+                            <div class="teacher-subject">Senior Social Studies Teacher</div>
+                            <div class="teacher-details">
+                                <div class="teacher-detail-item">
+                                    <strong>📧 Email:</strong>
+                                    <span>ramesh.g@concepts.edu</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>📞 Phone:</strong>
+                                    <span>+91 98765 43217</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>🎓 Qualification:</strong>
+                                    <span>M.A History, B.Ed</span>
+                                </div>
+                                <div class="teacher-detail-item">
+                                    <strong>⏰ Experience:</strong>
+                                    <span>16 Years</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="attendance-options">
+                    <button class="btn-attendance" onclick="viewAttendance('social')">View Attendance</button>
+                    <button class="btn-attendance" onclick="markAttendancePrompt()">Mark Attendance</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Password Modal for Mark Attendance -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content small-modal">
+            <div class="modal-header">
+                <h2>🔒 Enter Password</h2>
+                <button class="close-btn" onclick="closeModal('password')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="password-form">
+                    <input type="password" id="attendancePassword" placeholder="Enter password" class="password-input">
+                    <button class="btn-primary" onclick="checkPassword()">Submit</button>
+                    <p id="passwordError" class="error-message" style="display: none;">Incorrect password. Please try again.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subject Selection Modal -->
+    <div id="subjectSelectionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📖 Select Subject</h2>
+                <button class="close-btn" onclick="closeModal('subjectSelection')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="subject-grid">
+                    <button class="subject-btn" onclick="selectSubject('physics')">Physics</button>
+                    <button class="subject-btn" onclick="selectSubject('chemistry')">Chemistry</button>
+                    <button class="subject-btn" onclick="selectSubject('biology')">Biology</button>
+                    <button class="subject-btn" onclick="selectSubject('mathematics')">Mathematics</button>
+                    <button class="subject-btn" onclick="selectSubject('english')">English</button>
+                    <button class="subject-btn" onclick="selectSubject('social')">Social Studies</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Class Selection Modal -->
+    <div id="classSelectionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📚 Select Class</h2>
+                <button class="close-btn" onclick="closeModal('classSelection')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="class-grid">
+                    <button class="class-btn" onclick="selectClass(6)">Class 6</button>
+                    <button class="class-btn" onclick="selectClass(7)">Class 7</button>
+                    <button class="class-btn" onclick="selectClass(8)">Class 8</button>
+                    <button class="class-btn" onclick="selectClass(9)">Class 9</button>
+                    <button class="class-btn" onclick="selectClass(10)">Class 10</button>
+                    <button class="class-btn" onclick="selectClass(11)">Class 11</button>
+                    <button class="class-btn" onclick="selectClass(12)">Class 12</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Attendance Modal -->
+    <div id="viewAttendanceModal" class="modal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h2>📊 Attendance Records</h2>
+                <button class="close-btn" onclick="closeModal('viewAttendance')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="attendanceRecords">
+                    <!-- Attendance records will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mark Attendance Modal -->
+    <div id="markAttendanceModal" class="modal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h2>✅ Mark Attendance</h2>
+                <button class="close-btn" onclick="closeModal('markAttendance')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="markAttendanceContent">
+                    <!-- Attendance marking interface will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toppers Modal -->
+    <div id="toppersModal" class="modal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h2>🏆 BOARD TOPPERS</h2>
+                <button class="close-btn" onclick="closeModal('toppers')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="toppers-container">
+                    <!-- Class 10th Toppers -->
+                    <div class="toppers-section">
+                        <h3>Class 10th Toppers</h3>
+                        <div class="toppers-grid">
+                            <div class="topper-card">
+                                <div class="topper-image">
+                                    <img src="cpcimg.png" alt="Topper 1" class="topper-photo">
+                                </div>
+                                <div class="topper-info">
+                                    <h4>Riya Sharma</h4>
+                                    <p class="topper-rank">Rank: 1st</p>
+                                    <p class="topper-score">Percentage: 98.5%</p>
+                                </div>
+                            </div>
+                            <div class="topper-card">
+                                <div class="topper-image">
+                                    <img src="cpcimg.png" alt="Topper 2" class="topper-photo">
+                                </div>
+                                <div class="topper-info">
+                                    <h4>Aryan Gupta</h4>
+                                    <p class="topper-rank">Rank: 2nd</p>
+                                    <p class="topper-score">Percentage: 97.8%</p>
+                                </div>
+                            </div>
+                            <div class="topper-card">
+                                <div class="topper-image">
+                                    <img src="cpcimg.png" alt="Topper 3" class="topper-photo">
+                                </div>
+                                <div class="topper-info">
+                                    <h4>Priya Singh</h4>
+                                    <p class="topper-rank">Rank: 3rd</p>
+                                    <p class="topper-score">Percentage: 97.2%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Class 12th Toppers -->
+                    <div class="toppers-section">
+                        <h3>Class 12th Toppers</h3>
+                        <div class="toppers-grid">
+                            <div class="topper-card">
+                                <div class="topper-image">
+                                    <img src="cpcimg.png" alt="Topper 1" class="topper-photo">
+                                </div>
+                                <div class="topper-info">
+                                    <h4>Rahul Kumar</h4>
+                                    <p class="topper-rank">Rank: 1st</p>
+                                    <p class="topper-score">Percentage: 96.8%</p>
+                                </div>
+                            </div>
+                            <div class="topper-card">
+                                <div class="topper-image">
+                                    <img src="cpcimg.png" alt="Topper 2" class="topper-photo">
+                                </div>
+                                <div class="topper-info">
+                                    <h4>Ananya Patel</h4>
+                                    <p class="topper-rank">Rank: 2nd</p>
+                                    <p class="topper-score">Percentage: 96.2%</p>
+                                </div>
+                            </div>
+                            <div class="topper-card">
+                                <div class="topper-image">
+                                    <img src="cpcimg.png" alt="Topper 3" class="topper-photo">
+                                </div>
+                                <div class="topper-info">
+                                    <h4>Vikram Singh</h4>
+                                    <p class="topper-rank">Rank: 3rd</p>
+                                    <p class="topper-score">Percentage: 95.9%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+     <script src="script.js"></script>
+</body>
+</html>
+
