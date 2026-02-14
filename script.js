@@ -1,3 +1,40 @@
+// Dark Mode Toggle Function
+function toggleDarkMode() {
+    const body = document.body;
+    const themeToggle = document.getElementById('themeToggle');
+    
+    // Toggle dark mode class
+    body.classList.toggle('dark-mode');
+    
+    // Save preference to localStorage
+    const isDarkMode = body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDarkMode);
+    
+    // Update button icon
+    if (isDarkMode) {
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        themeToggle.title = 'Toggle Light Mode';
+    } else {
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        themeToggle.title = 'Toggle Dark Mode';
+    }
+}
+
+// Load dark mode preference on page load
+function loadDarkModePreference() {
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    const body = document.body;
+    const themeToggle = document.getElementById('themeToggle');
+    
+    if (isDarkMode) {
+        body.classList.add('dark-mode');
+        if (themeToggle) {
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            themeToggle.title = 'Toggle Light Mode';
+        }
+    }
+}
+
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
@@ -8,26 +45,948 @@ function toggleSidebar() {
     menuBtn.classList.toggle('active');
 }
 
-function showSection(sectionName) {
-    // Hide all sections
+// Menu Management
+let hiddenMenus = JSON.parse(localStorage.getItem('hiddenMenus')) || [];
+
+function toggleSubmenu(submenuName) {
+    const submenu = document.getElementById(submenuName + '-submenu');
+    const navItem = document.querySelector(`[onclick="toggleSubmenu('${submenuName}')"]`);
+    
+    if (submenu) {
+        document.querySelectorAll('.submenu').forEach(menu => {
+            if (menu !== submenu) {
+                menu.classList.remove('active');
+                const item = menu.previousElementSibling;
+                if (item) item.classList.remove('active');
+            }
+        });
+        
+        submenu.classList.toggle('active');
+        if (navItem) navItem.classList.toggle('active');
+    }
+}
+
+function closeSubmenu(submenuName) {
+    const submenu = document.getElementById(submenuName + '-submenu');
+    const navItem = document.querySelector(`[onclick="toggleSubmenu('${submenuName}')"]`);
+    
+    if (submenu) {
+        submenu.classList.remove('active');
+        if (navItem) navItem.classList.remove('active');
+    }
+}
+
+function hideMenuItem(menuName) {
+    const wrapper = document.getElementById(menuName + '-wrapper');
+    
+    if (wrapper) {
+        wrapper.classList.add('hidden');
+        
+        if (!hiddenMenus.includes(menuName)) {
+            hiddenMenus.push(menuName);
+        }
+        
+        localStorage.setItem('hiddenMenus', JSON.stringify(hiddenMenus));
+        updateHiddenMenuNotice();
+        
+        // Show confirmation toast
+        showToast(`${menuName.charAt(0).toUpperCase() + menuName.slice(1)} menu hidden. Click "Restore All" to show.`);
+    }
+}
+
+function restoreMenuItem(menuName) {
+    const wrapper = document.getElementById(menuName + '-wrapper');
+    
+    if (wrapper) {
+        wrapper.classList.remove('hidden');
+        hiddenMenus = hiddenMenus.filter(item => item !== menuName);
+        localStorage.setItem('hiddenMenus', JSON.stringify(hiddenMenus));
+        updateHiddenMenuNotice();
+        showToast(`${menuName.charAt(0).toUpperCase() + menuName.slice(1)} menu restored!`);
+    }
+}
+
+function restoreAllMenus() {
+    const allWrappers = document.querySelectorAll('.nav-item-wrapper');
+    allWrappers.forEach(wrapper => {
+        wrapper.classList.remove('hidden');
+    });
+    
+    hiddenMenus = [];
+    localStorage.setItem('hiddenMenus', JSON.stringify(hiddenMenus));
+    updateHiddenMenuNotice();
+    showToast('All menus restored!');
+}
+
+function updateHiddenMenuNotice() {
+    const notice = document.getElementById('hidden-menu-notice');
+    const countSpan = document.getElementById('hidden-count');
+    
+    if (hiddenMenus.length > 0) {
+        countSpan.textContent = hiddenMenus.length;
+        notice.style.display = 'block';
+        notice.innerHTML = `
+            <p>
+                📌 Hidden menus: <span id="hidden-count">${hiddenMenus.length}</span> | 
+                <button onclick="restoreAllMenus();" style="padding: 5px 10px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    ↻ Restore All
+                </button>
+            </p>
+        `;
+    } else {
+        notice.style.display = 'none';
+    }
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, var(--primary) 0%, #424242 100%);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        z-index: 10000;
+        animation: slideIn 0.3s ease-out;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        max-width: 300px;
+        word-wrap: break-word;
+    `;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// Initialize hidden menus on page load
+function initializeHiddenMenus() {
+    hiddenMenus = JSON.parse(localStorage.getItem('hiddenMenus')) || [];
+    
+    hiddenMenus.forEach(menuName => {
+        const wrapper = document.getElementById(menuName + '-wrapper');
+        if (wrapper) {
+            wrapper.classList.add('hidden');
+        }
+    });
+    
+    updateHiddenMenuNotice();
+}
+
+// Add to DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+    initializeHiddenMenus();
+    loadDarkModePreference(); // Load dark mode preference
+});
+
+function handleMenuClick(menuId) {
+    // Close sidebar on mobile
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const menuBtn = document.getElementById('menuBtn');
+    
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+    menuBtn.classList.remove('active');
+    
+    // Get menu content
+    const contentData = getMenuContent(menuId);
+    
+    // Show menu content section
     const sections = document.querySelectorAll('.section');
     sections.forEach(section => {
         section.classList.remove('active');
     });
     
-    // Show the selected section
+    const menuSection = document.getElementById('menu-content');
+    if (menuSection) {
+        menuSection.style.display = 'block';
+        menuSection.classList.add('active');
+        
+        // Set content
+        document.getElementById('menu-content-title').innerHTML = contentData.title;
+        document.getElementById('menu-content-body').innerHTML = contentData.content;
+    }
+}
+
+function getMenuContent(menuId) {
+    const contentMap = {
+        'academic-calendar': {
+            title: '📅 Academic Calendar',
+            content: `
+                <h2>Academic Year 2025-2026</h2>
+                <p>The academic calendar provides a comprehensive schedule of all important dates and events throughout the academic year.</p>
+                
+                <h3 style="margin-top: 20px;">Important Dates:</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <tr style="background: var(--light);">
+                        <th style="padding: 10px; border: 1px solid var(--grey-light); text-align: left;">Event</th>
+                        <th style="padding: 10px; border: 1px solid var(--grey-light); text-align: left;">Date</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">Session Start</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">April 1, 2025</td>
+                    </tr>
+                    <tr style="background: var(--light);">
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">First Term Exams</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">June 15-30, 2025</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">Summer Break</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">July 1-31, 2025</td>
+                    </tr>
+                    <tr style="background: var(--light);">
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">Second Term Exams</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">September 10-25, 2025</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">Annual Exams</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">January 15-February 28, 2026</td>
+                    </tr>
+                </table>
+            `
+        },
+        'course-materials': {
+            title: '📚 Course Materials',
+            content: `
+                <h2>Download Course Materials</h2>
+                <p>Access comprehensive study materials for all subjects and classes. Materials are regularly updated by our expert faculty.</p>
+                
+                <h3 style="margin-top: 20px;">Available Materials:</h3>
+                <div class="info-grid" style="margin-top: 15px;">
+                    <div class="info-item">
+                        <strong>📖 Lecture Notes</strong>
+                        <p style="margin-top: 8px; color: #666;">Complete lecture notes for all chapters</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>✍️ Assignments</strong>
+                        <p style="margin-top: 8px; color: #666;">Practice assignments with solutions</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>📊 Solved Examples</strong>
+                        <p style="margin-top: 8px; color: #666;">Step-by-step solved problems</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>🎥 Video Tutorials</strong>
+                        <p style="margin-top: 8px; color: #666;">Recorded video lessons available</p>
+                    </div>
+                </div>
+            `
+        },
+        'syllabus': {
+            title: '📖 Syllabus',
+            content: `
+                <h2>Complete Course Syllabus</h2>
+                <p>Our curriculum is designed to cover all topics required by the board while emphasizing conceptual understanding.</p>
+                
+                <h3 style="margin-top: 20px;">Class-wise Syllabus:</h3>
+                <ul>
+                    <li><strong>Classes 6-8:</strong> Foundation courses in Mathematics, Science, and English</li>
+                    <li><strong>Classes 9-10:</strong> Board preparation with NCERT and additional reference materials</li>
+                    <li><strong>Classes 11-12:</strong> JEE/NEET/Board preparation with comprehensive coverage</li>
+                </ul>
+                
+                <h3 style="margin-top: 20px;">Key Features:</h3>
+                <ul>
+                    <li>Aligned with CBSE/ICSE curriculum standards</li>
+                    <li>Emphasis on conceptual clarity</li>
+                    <li>Regular practice with problem-solving techniques</li>
+                    <li>Time management and exam strategies</li>
+                </ul>
+            `
+        },
+        'class-schedule': {
+            title: '🕐 Class Schedule',
+            content: `
+                <h2>Weekly Class Schedule</h2>
+                <p>Our classes are scheduled to ensure optimal learning with adequate time for practice and doubt resolution.</p>
+                
+                <h3 style="margin-top: 20px;">Regular Classes:</h3>
+                <p><strong>Monday to Friday:</strong> 7:00 AM - 10:00 AM & 4:00 PM - 7:00 PM</p>
+                <p><strong>Saturday:</strong> 7:00 AM - 1:00 PM</p>
+                <p><strong>Sunday:</strong> Revision & Doubt Clearing (Optional)</p>
+                
+                <h3 style="margin-top: 20px;">Special Sessions:</h3>
+                <ul>
+                    <li>One-on-one doubt clearing sessions available</li>
+                    <li>Weekend batch for working professionals</li>
+                    <li>Online classes for remote students</li>
+                    <li>Exam preparation intensive sessions</li>
+                </ul>
+            `
+        },
+        'fee-status': {
+            title: '💰 Fee Status',
+            content: `
+                <h2>Your Fee Status</h2>
+                <p>Track your payment status and outstanding dues here.</p>
+                
+                <h3 style="margin-top: 20px;">Current Status:</h3>
+                <div class="info-grid" style="margin-top: 15px;">
+                    <div class="info-item">
+                        <strong>Total Due</strong>
+                        <p style="margin-top: 8px; color: var(--primary); font-size: 18px; font-weight: 700;">₹0</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>Status</strong>
+                        <p style="margin-top: 8px; color: #27ae60; font-size: 16px; font-weight: 600;">✓ Paid Up</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>Last Payment</strong>
+                        <p style="margin-top: 8px;">January 15, 2025</p>
+                    </div>
+                </div>
+            `
+        },
+        'fee-payment': {
+            title: '💳 Fee Payment',
+            content: `
+                <h2>Online Fee Payment</h2>
+                <p>Pay your fees securely online through multiple payment options.</p>
+                
+                <h3 style="margin-top: 20px;">Payment Methods Available:</h3>
+                <ul>
+                    <li>Credit/Debit Card (Visa, MasterCard, RuPay)</li>
+                    <li>Net Banking</li>
+                    <li>UPI (Google Pay, PhonePe, Paytm)</li>
+                    <li>Direct Bank Transfer</li>
+                    <li>Check/DD Payment</li>
+                </ul>
+                
+                <h3 style="margin-top: 20px;">Steps:</h3>
+                <ol>
+                    <li>Select payment method</li>
+                    <li>Enter your registration number</li>
+                    <li>Review fee structure</li>
+                    <li>Complete payment</li>
+                    <li>Download receipt</li>
+                </ol>
+            `
+        },
+        'receipts': {
+            title: '🧾 Receipts',
+            content: `
+                <h2>Payment Receipts</h2>
+                <p>View and download your payment receipts from here.</p>
+                
+                <h3 style="margin-top: 20px;">Recent Transactions:</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <tr style="background: var(--light);">
+                        <th style="padding: 10px; border: 1px solid var(--grey-light); text-align: left;">Date</th>
+                        <th style="padding: 10px; border: 1px solid var(--grey-light); text-align: left;">Amount</th>
+                        <th style="padding: 10px; border: 1px solid var(--grey-light); text-align: left;">Type</th>
+                        <th style="padding: 10px; border: 1px solid var(--grey-light); text-align: center;">Action</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">January 15, 2025</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">₹15,000</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">Monthly Fee</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light); text-align: center;"><button class="btn-primary" style="padding: 5px 10px; font-size: 12px;">Download</button></td>
+                    </tr>
+                </table>
+            `
+        },
+        'financial-reports': {
+            title: '📊 Financial Reports',
+            content: `
+                <h2>Financial Reports & Analysis</h2>
+                <p>View detailed financial reports and expense breakdown.</p>
+                
+                <h3 style="margin-top: 20px;">Fee Structure 2025-26:</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <tr style="background: var(--light);">
+                        <th style="padding: 10px; border: 1px solid var(--grey-light); text-align: left;">Item</th>
+                        <th style="padding: 10px; border: 1px solid var(--grey-light); text-align: right;">Amount</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">Tuition Fee</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light); text-align: right;">₹12,000</td>
+                    </tr>
+                    <tr style="background: var(--light);">
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">Registration Fee</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light); text-align: right;">₹1,000</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">Study Material</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light); text-align: right;">₹2,000</td>
+                    </tr>
+                    <tr style="background: #fff3cd;">
+                        <td style="padding: 10px; border: 1px solid var(--grey-light); font-weight: 700;">Total Monthly</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light); text-align: right; font-weight: 700;">₹15,000</td>
+                    </tr>
+                </table>
+            `
+        },
+        'staff-directory': {
+            title: '👥 Staff Directory',
+            content: `
+                <h2>Staff & Faculty Directory</h2>
+                <p>Find contact information for all staff members and faculty.</p>
+                
+                <h3 style="margin-top: 20px;">Administration:</h3>
+                <div class="info-grid" style="margin-top: 15px;">
+                    <div class="info-item">
+                        <strong>Founder & Director</strong>
+                        <p style="margin-top: 8px;">Abhishek Raj</p>
+                        <p style="color: #666; font-size: 12px;">Phone: +91 8863994647</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>Academic Coordinator</strong>
+                        <p style="margin-top: 8px;">Available on Request</p>
+                        <p style="color: #666; font-size: 12px;">Email: academics@concepts.edu</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>Student Support</strong>
+                        <p style="margin-top: 8px;">Available</p>
+                        <p style="color: #666; font-size: 12px;">Phone: +91 8228835898</p>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 20px;">Department Heads:</h3>
+                <ul>
+                    <li><strong>Physics:</strong> Abhishek Raj</li>
+                    <li><strong>Chemistry:</strong> Dr. Amit Singh</li>
+                    <li><strong>Mathematics:</strong> Prof. Vikram Pandey</li>
+                    <li><strong>Biology:</strong> Dr. Priya Verma</li>
+                </ul>
+            `
+        },
+        'notices': {
+            title: '📢 Notices & Announcements',
+            content: `
+                <h2>Official Notices & Announcements</h2>
+                <p>Stay updated with the latest notices from the institute.</p>
+                
+                <h3 style="margin-top: 20px;">Latest Notices:</h3>
+                <div style="margin-top: 15px;">
+                    <div class="info-item" style="margin-bottom: 15px;">
+                        <strong style="color: var(--primary); font-size: 16px;">🎓 Class Schedules Updated</strong>
+                        <p style="margin-top: 8px; color: #666;">New batch timings for Spring semester are now live. Check the class schedule section.</p>
+                        <p style="margin-top: 8px; color: #999; font-size: 12px;">Posted: February 3, 2025</p>
+                    </div>
+                    <div class="info-item" style="margin-bottom: 15px;">
+                        <strong style="color: var(--primary); font-size: 16px;">📝 Admission Open</strong>
+                        <p style="margin-top: 8px; color: #666;">Admissions are now open for all classes. Limited seats available.</p>
+                        <p style="margin-top: 8px; color: #999; font-size: 12px;">Posted: February 1, 2025</p>
+                    </div>
+                    <div class="info-item">
+                        <strong style="color: var(--primary); font-size: 16px;">🏆 Merit Scholarships Available</strong>
+                        <p style="margin-top: 8px; color: #666;">Merit-based scholarships up to 50% are available for deserving students.</p>
+                        <p style="margin-top: 8px; color: #999; font-size: 12px;">Posted: January 28, 2025</p>
+                    </div>
+                </div>
+            `
+        },
+        'leave-management': {
+            title: '📝 Leave & Absence Management',
+            content: `
+                <h2>Leave & Attendance Management</h2>
+                <p>Manage your leaves and track your attendance record.</p>
+                
+                <h3 style="margin-top: 20px;">Leave Policy:</h3>
+                <ul>
+                    <li><strong>Casual Leave:</strong> 10 days per academic year</li>
+                    <li><strong>Medical Leave:</strong> As per medical certificate</li>
+                    <li><strong>Maternity/Paternity Leave:</strong> As per institutional policy</li>
+                    <li><strong>Approved Absence:</strong> For competitions/events (requires prior approval)</li>
+                </ul>
+                
+                <h3 style="margin-top: 20px;">Absence Procedure:</h3>
+                <ol>
+                    <li>Notify your class teacher immediately</li>
+                    <li>Submit formal leave application with supporting documents</li>
+                    <li>Inform parents through parent portal</li>
+                    <li>Complete assignments and make up missed classes</li>
+                </ol>
+            `
+        },
+        'certificates': {
+            title: '🎖️ Certificates & Documents',
+            content: `
+                <h2>Request Certificates & Documents</h2>
+                <p>Apply for various certificates and official documents.</p>
+                
+                <h3 style="margin-top: 20px;">Available Certificates:</h3>
+                <div class="info-grid" style="margin-top: 15px;">
+                    <div class="info-item">
+                        <strong>Character Certificate</strong>
+                        <p style="margin-top: 8px; color: #666;">Processing: 3-5 working days</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>Transfer Certificate</strong>
+                        <p style="margin-top: 8px; color: #666;">Processing: 5-7 working days</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>Conduct Certificate</strong>
+                        <p style="margin-top: 8px; color: #666;">Processing: 3-5 working days</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>Merit Certificate</strong>
+                        <p style="margin-top: 8px; color: #666;">For toppers and achievers</p>
+                    </div>
+                </div>
+            `
+        },
+        'ebooks': {
+            title: '📱 E-Books & Digital Resources',
+            content: `
+                <h2>Digital Library - E-Books</h2>
+                <p>Access our comprehensive collection of e-books and digital reading materials.</p>
+                
+                <h3 style="margin-top: 20px;">Available Collections:</h3>
+                <ul>
+                    <li><strong>NCERT Books:</strong> All subjects and classes (6-12)</li>
+                    <li><strong>Reference Books:</strong> Popular reference materials</li>
+                    <li><strong>JEE/NEET Prep:</strong> Comprehensive preparation materials</li>
+                    <li><strong>Competitive Exams:</strong> Various entrance exam guides</li>
+                    <li><strong>General Knowledge:</strong> Current affairs and GK updates</li>
+                </ul>
+                
+                <h3 style="margin-top: 20px;">How to Access:</h3>
+                <ol>
+                    <li>Login with your student ID</li>
+                    <li>Browse the digital library</li>
+                    <li>Search by subject, class, or topic</li>
+                    <li>Read online or download for offline access</li>
+                </ol>
+            `
+        },
+        'journals': {
+            title: '📰 Journals & Magazines',
+            content: `
+                <h2>Academic Journals & Magazines</h2>
+                <p>Access curated academic journals and educational magazines.</p>
+                
+                <h3 style="margin-top: 20px;">Featured Publications:</h3>
+                <ul>
+                    <li><strong>Science Today:</strong> Latest scientific research and discoveries</li>
+                    <li><strong>Math Express:</strong> Mathematics problem-solving techniques</li>
+                    <li><strong>Current Science:</strong> Scientific advancements and innovations</li>
+                    <li><strong>Young Achievers:</strong> Student success stories and tips</li>
+                </ul>
+                
+                <h3 style="margin-top: 20px;">Archive:</h3>
+                <p>Access complete archives of all publications from the past 5 years.</p>
+            `
+        },
+        'research-papers': {
+            title: '🔬 Research Papers & Studies',
+            content: `
+                <h2>Research Papers Database</h2>
+                <p>Browse and download research papers on various academic topics.</p>
+                
+                <h3 style="margin-top: 20px;">Research Areas:</h3>
+                <ul>
+                    <li>Physics & Quantum Mechanics</li>
+                    <li>Chemistry & Biochemistry</li>
+                    <li>Biology & Life Sciences</li>
+                    <li>Mathematics & Statistics</li>
+                    <li>Environmental Science</li>
+                </ul>
+                
+                <h3 style="margin-top: 20px;">How to Use:</h3>
+                <ol>
+                    <li>Search by topic or author</li>
+                    <li>Review abstract and summary</li>
+                    <li>Download PDF for detailed reading</li>
+                    <li>Cite in your assignments using standard formats</li>
+                </ol>
+            `
+        },
+        'video-lectures': {
+            title: '🎥 Video Lectures & Tutorials',
+            content: `
+                <h2>Video Lecture Library</h2>
+                <p>Access comprehensive video lectures covering all topics.</p>
+                
+                <h3 style="margin-top: 20px;">Content Features:</h3>
+                <ul>
+                    <li>High-quality video lectures by expert teachers</li>
+                    <li>Subtitle support in English and Hindi</li>
+                    <li>Downloadable lecture notes</li>
+                    <li>Quiz questions after each video</li>
+                    <li>Doubt resolution in comments section</li>
+                </ul>
+                
+                <h3 style="margin-top: 20px;">Access Requirements:</h3>
+                <ul>
+                    <li>Valid student registration</li>
+                    <li>Internet connection (minimum 512 kbps)</li>
+                    <li>Compatible device (PC, tablet, smartphone)</li>
+                </ul>
+            `
+        },
+        'exam-schedule': {
+            title: '📅 Exam Schedule & Details',
+            content: `
+                <h2>Examination Schedule</h2>
+                <p>Complete examination schedule and important dates for the academic year.</p>
+                
+                <h3 style="margin-top: 20px;">Exam Calendar 2025-26:</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <tr style="background: var(--light);">
+                        <th style="padding: 10px; border: 1px solid var(--grey-light); text-align: left;">Exam</th>
+                        <th style="padding: 10px; border: 1px solid var(--grey-light); text-align: left;">Duration</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">Unit Test 1</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">May 15-20, 2025</td>
+                    </tr>
+                    <tr style="background: var(--light);">
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">Mid Term Exams</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">June 15-30, 2025</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">Pre-Board Exams</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">December 20, 2025 - January 15, 2026</td>
+                    </tr>
+                    <tr style="background: var(--light);">
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">Board Exams</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">January 25 - February 28, 2026</td>
+                    </tr>
+                </table>
+            `
+        },
+        'admit-card': {
+            title: '🎫 Admit Card',
+            content: `
+                <h2>Download Your Admit Card</h2>
+                <p>Download and print your exam admit cards.</p>
+                
+                <h3 style="margin-top: 20px;">How to Obtain:</h3>
+                <ol>
+                    <li>Login with your registration number</li>
+                    <li>Select the exam for which you need the admit card</li>
+                    <li>Verify your details</li>
+                    <li>Download and print the admit card</li>
+                </ol>
+                
+                <h3 style="margin-top: 20px;">Important Instructions:</h3>
+                <ul>
+                    <li>Keep admit card safe and bring it on exam day</li>
+                    <li>Check all details carefully</li>
+                    <li>Report any discrepancies immediately</li>
+                    <li>Arrive 30 minutes before exam time</li>
+                </ul>
+            `
+        },
+        'results': {
+            title: '📈 Examination Results',
+            content: `
+                <h2>View Your Exam Results</h2>
+                <p>Check your examination results and detailed performance analysis.</p>
+                
+                <h3 style="margin-top: 20px;">Recent Results:</h3>
+                <div class="info-grid" style="margin-top: 15px;">
+                    <div class="info-item">
+                        <strong>Unit Test 1 (May 2025)</strong>
+                        <p style="margin-top: 8px; font-size: 18px; color: var(--primary); font-weight: 700;">85/100</p>
+                        <p style="color: #666; font-size: 12px;">Published: May 22, 2025</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>Mid Term Exams (June 2025)</strong>
+                        <p style="margin-top: 8px;">Results pending</p>
+                        <p style="color: #666; font-size: 12px;">Expected: July 5, 2025</p>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 20px;">Features:</h3>
+                <ul>
+                    <li>Detailed subject-wise breakup</li>
+                    <li>Percentile ranking</li>
+                    <li>Performance trend analysis</li>
+                    <li>Downloadable result sheet</li>
+                </ul>
+            `
+        },
+        'previous-papers': {
+            title: '📄 Previous Question Papers',
+            content: `
+                <h2>Previous Exam Question Papers</h2>
+                <p>Access and download previous years' question papers for exam preparation.</p>
+                
+                <h3 style="margin-top: 20px;">Available Papers:</h3>
+                <ul>
+                    <li>Last 5 years' board exam papers</li>
+                    <li>Competitive entrance exam papers (JEE, NEET, etc.)</li>
+                    <li>Unit test and mock exam papers</li>
+                    <li>Sample papers prepared by faculty</li>
+                </ul>
+                
+                <h3 style="margin-top: 20px;">How to Use:</h3>
+                <ol>
+                    <li>Select subject and year</li>
+                    <li>Download the PDF</li>
+                    <li>Attempt the paper in exam conditions</li>
+                    <li>Check solutions provided</li>
+                    <li>Analyze mistakes and improve</li>
+                </ol>
+            `
+        },
+        'hostel-info': {
+            title: '🏠 Hostel Information',
+            content: `
+                <h2>Hostel Facilities & Information</h2>
+                <p>Comprehensive information about our residential hostels.</p>
+                
+                <h3 style="margin-top: 20px;">Facilities Provided:</h3>
+                <ul>
+                    <li><strong>Accommodation:</strong> Well-ventilated rooms with basic amenities</li>
+                    <li><strong>Food:</strong> Nutritious, home-cooked meals (vegetarian & non-vegetarian)</li>
+                    <li><strong>Recreation:</strong> Common hall with TV, games area</li>
+                    <li><strong>Internet:</strong> 24x7 high-speed WiFi connectivity</li>
+                    <li><strong>Security:</strong> 24-hour security and CCTV surveillance</li>
+                    <li><strong>Laundry:</strong> Laundry services available (chargeable)</li>
+                </ul>
+                
+                <h3 style="margin-top: 20px;">Rules & Regulations:</h3>
+                <ul>
+                    <li>Mandatory attendance in classes</li>
+                    <li>Lights off at 10:00 PM</li>
+                    <li>No visitors after 6:00 PM</li>
+                    <li>No ragging policy strictly enforced</li>
+                </ul>
+            `
+        },
+        'room-allocation': {
+            title: '🛏️ Room Allocation',
+            content: `
+                <h2>Room Allocation & Management</h2>
+                <p>Information about room allocation and room management policies.</p>
+                
+                <h3 style="margin-top: 20px;">Room Types:</h3>
+                <div class="info-grid" style="margin-top: 15px;">
+                    <div class="info-item">
+                        <strong>Single Room</strong>
+                        <p style="margin-top: 8px; color: #666;">For senior students (Class 11-12)</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>Double Sharing</strong>
+                        <p style="margin-top: 8px; color: #666;">For junior and senior students</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>Triple Sharing</strong>
+                        <p style="margin-top: 8px; color: #666;">For junior students (Class 6-8)</p>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 20px;">Allocation Process:</h3>
+                <ol>
+                    <li>Submit hostel application form</li>
+                    <li>Interview by hostel manager</li>
+                    <li>Room allocation on merit</li>
+                    <li>Confirmation and fee payment</li>
+                </ol>
+            `
+        },
+        'hostel-fees': {
+            title: '💵 Hostel Fee Structure',
+            content: `
+                <h2>Hostel Fee Structure</h2>
+                <p>Complete information about hostel fees and payment terms.</p>
+                
+                <h3 style="margin-top: 20px;">Monthly Fee Breakdown:</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <tr style="background: var(--light);">
+                        <th style="padding: 10px; border: 1px solid var(--grey-light); text-align: left;">Item</th>
+                        <th style="padding: 10px; border: 1px solid var(--grey-light); text-align: right;">Amount (₹)</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">Room Rent (Single)</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light); text-align: right;">8,000</td>
+                    </tr>
+                    <tr style="background: var(--light);">
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">Room Rent (Double)</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light); text-align: right;">5,000</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">Meal Charges</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light); text-align: right;">4,000</td>
+                    </tr>
+                    <tr style="background: var(--light);">
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">Utilities</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light); text-align: right;">1,000</td>
+                    </tr>
+                    <tr style="background: #fff3cd;">
+                        <td style="padding: 10px; border: 1px solid var(--grey-light); font-weight: 700;">Total (Double)</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light); text-align: right; font-weight: 700;">10,000</td>
+                    </tr>
+                </table>
+            `
+        },
+        'hostel-complaints': {
+            title: '⚠️ Hostel Complaint & Feedback',
+            content: `
+                <h2>Complaint & Feedback Portal</h2>
+                <p>Report any hostel-related issues or provide suggestions.</p>
+                
+                <h3 style="margin-top: 20px;">Types of Complaints:</h3>
+                <ul>
+                    <li>Maintenance and facilities issues</li>
+                    <li>Food quality and menu suggestions</li>
+                    <li>Room cleanliness and repairs</li>
+                    <li>Discipline and behavioral issues</li>
+                    <li>Administrative matters</li>
+                </ul>
+                
+                <h3 style="margin-top: 20px;">How to File a Complaint:</h3>
+                <ol>
+                    <li>Submit form to hostel office (direct or online)</li>
+                    <li>Provide detailed description</li>
+                    <li>Attach photos/evidence if applicable</li>
+                    <li>Response within 48 hours</li>
+                </ol>
+                
+                <h3 style="margin-top: 20px;">Contact:</h3>
+                <p><strong>Hostel Manager:</strong> Available daily, 3:00 PM - 5:00 PM</p>
+            `
+        },
+        'book-catalog': {
+            title: '📚 Library Book Catalog',
+            content: `
+                <h2>Library Book Catalog</h2>
+                <p>Search and browse our comprehensive library book collection.</p>
+                
+                <h3 style="margin-top: 20px;">Collection Statistics:</h3>
+                <div class="info-grid" style="margin-top: 15px;">
+                    <div class="info-item">
+                        <strong>Total Books</strong>
+                        <p style="margin-top: 8px; font-size: 18px; color: var(--primary); font-weight: 700;">15,000+</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>Reference Books</strong>
+                        <p style="margin-top: 8px; font-size: 18px; color: var(--primary); font-weight: 700;">3,500+</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>Fiction/General</strong>
+                        <p style="margin-top: 8px; font-size: 18px; color: var(--primary); font-weight: 700;">4,000+</p>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 20px;">Search Options:</h3>
+                <ul>
+                    <li>By subject or topic</li>
+                    <li>By author name</li>
+                    <li>By ISBN number</li>
+                    <li>By publication year</li>
+                </ul>
+            `
+        },
+        'issue-return': {
+            title: '📤 Book Issue & Return',
+            content: `
+                <h2>Library Book Issue & Return</h2>
+                <p>Manage your book borrowing and returns.</p>
+                
+                <h3 style="margin-top: 20px;">Issue Policy:</h3>
+                <ul>
+                    <li><strong>Maximum Books:</strong> 3 books at a time</li>
+                    <li><strong>Issue Period:</strong> 14 days</li>
+                    <li><strong>Renewal:</strong> Can be extended for 7 days</li>
+                    <li><strong>Reference Books:</strong> 2-hour reading only</li>
+                </ul>
+                
+                <h3 style="margin-top: 20px;">Return Process:</h3>
+                <ol>
+                    <li>Check due date on your library card</li>
+                    <li>Return books in good condition</li>
+                    <li>No fines if returned on time</li>
+                    <li>Late charges: ₹5 per book per day</li>
+                </ol>
+            `
+        },
+        'member-info': {
+            title: '💳 Library Member Information',
+            content: `
+                <h2>Your Library Membership</h2>
+                <p>View and manage your library membership details.</p>
+                
+                <h3 style="margin-top: 20px;">Your Profile:</h3>
+                <div class="info-grid" style="margin-top: 15px;">
+                    <div class="info-item">
+                        <strong>Membership Status</strong>
+                        <p style="margin-top: 8px; color: #27ae60; font-weight: 600;">✓ Active</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>Books Issued</strong>
+                        <p style="margin-top: 8px; font-size: 18px; font-weight: 700;">2</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>Renewal Balance</strong>
+                        <p style="margin-top: 8px; font-size: 18px; font-weight: 700;">1</p>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 20px;">Current Books Issued:</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <tr style="background: var(--light);">
+                        <th style="padding: 10px; border: 1px solid var(--grey-light);">Book Title</th>
+                        <th style="padding: 10px; border: 1px solid var(--grey-light);">Due Date</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">Physics for Class 11</td>
+                        <td style="padding: 10px; border: 1px solid var(--grey-light);">February 15, 2025</td>
+                    </tr>
+                </table>
+            `
+        },
+        'fine-dues': {
+            title: '⚡ Library Fines & Dues',
+            content: `
+                <h2>Library Fines & Outstanding Dues</h2>
+                <p>Check your library fines and outstanding dues.</p>
+                
+                <h3 style="margin-top: 20px;">Your Account Status:</h3>
+                <div class="info-item" style="margin-top: 15px;">
+                    <strong>Total Outstanding Dues</strong>
+                    <p style="margin-top: 8px; font-size: 18px; color: #27ae60; font-weight: 700;">₹0</p>
+                </div>
+                
+                <h3 style="margin-top: 20px;">Fine Charges:</h3>
+                <ul>
+                    <li><strong>Late Return:</strong> ₹5 per book per day</li>
+                    <li><strong>Damaged Book:</strong> 50% of book value</li>
+                    <li><strong>Lost Book:</strong> 100% of book value</li>
+                    <li><strong>Maximum Fine:</strong> ₹500 per issue</li>
+                </ul>
+                
+                <h3 style="margin-top: 20px;">Payment Options:</h3>
+                <ul>
+                    <li>Online payment through library portal</li>
+                    <li>Direct payment at library counter</li>
+                    <li>Deduction from fee account</li>
+                </ul>
+            `
+        }
+    };
+    
+    return contentMap[menuId] || {
+        title: 'Page Not Found',
+        content: '<p>Sorry, this page could not be found.</p>'
+    };
+}
+
+function showSection(sectionName) {
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(section => {
+        section.classList.remove('active');
+    });
+    
     const targetSection = document.getElementById(sectionName);
     if (targetSection) {
         targetSection.classList.add('active');
     }
     
-    // Update navigation active state
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
         link.classList.remove('active');
     });
     
-    // Find and activate the corresponding nav link
     const activeLink = document.querySelector(`[onclick="showSection('${sectionName}')"]`);
     if (activeLink) {
         activeLink.classList.add('active');
@@ -66,91 +1025,6 @@ function closeTeacherModal(subject) {
     document.body.style.overflow = 'auto';
 }
 
-function uploadPhoto(teacherId) {
-    const fileInput = document.getElementById(teacherId + '-upload');
-    const file = fileInput.files[0];
-    
-    if (file) {
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-            const img = document.getElementById(teacherId + '-img');
-            const placeholder = document.getElementById(teacherId + '-placeholder');
-            
-            img.src = e.target.result;
-            img.style.display = 'block';
-            placeholder.style.display = 'none';
-            
-            // Store the image in localStorage to persist across sessions
-            localStorage.setItem(teacherId + '-photo', e.target.result);
-        };
-        
-        reader.readAsDataURL(file);
-    }
-}
-
-function uploadFounderPhoto() {
-    const fileInput = document.getElementById('founder-photo-upload');
-    const file = fileInput.files[0];
-    
-    if (file) {
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-            const img = document.getElementById('founder-photo-img');
-            const placeholder = document.getElementById('founder-photo-placeholder');
-            
-            img.src = e.target.result;
-            img.style.display = 'block';
-            placeholder.style.display = 'none';
-            
-            // Store the image in localStorage to persist across sessions
-            localStorage.setItem('founder-photo', e.target.result);
-        };
-        
-        reader.readAsDataURL(file);
-    }
-}
-
-// Load saved photos from localStorage when page loads
-window.addEventListener('DOMContentLoaded', function() {
-    const teacherIds = [
-        'physics-teacher1', 'physics-teacher2',
-        'chemistry-teacher1',
-        'biology-teacher1',
-        'mathematics-teacher1', 'mathematics-teacher2',
-        'english-teacher1',
-        'social-teacher1'
-    ];
-    
-    teacherIds.forEach(function(teacherId) {
-        const savedPhoto = localStorage.getItem(teacherId + '-photo');
-        if (savedPhoto) {
-            const img = document.getElementById(teacherId + '-img');
-            const placeholder = document.getElementById(teacherId + '-placeholder');
-            
-            if (img && placeholder) {
-                img.src = savedPhoto;
-                img.style.display = 'block';
-                placeholder.style.display = 'none';
-            }
-        }
-    });
-
-    // Load founder photo
-    const founderPhoto = localStorage.getItem('founder-photo');
-    if (founderPhoto) {
-        const img = document.getElementById('founder-photo-img');
-        const placeholder = document.getElementById('founder-photo-placeholder');
-        
-        if (img && placeholder) {
-            img.src = founderPhoto;
-            img.style.display = 'block';
-            placeholder.style.display = 'none';
-        }
-    }
-});
-
 window.onclick = function(event) {
     const modals = document.getElementsByClassName('modal');
     for (let modal of modals) {
@@ -161,7 +1035,7 @@ window.onclick = function(event) {
     }
 }
 
-// Highlight current nav link
+// Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
@@ -171,493 +1045,10 @@ document.addEventListener('DOMContentLoaded', function() {
             link.classList.remove('active');
         }
     });
+    
+    // Initialize hidden menus
+    initializeHiddenMenus();
+    
+    // Load dark mode preference
+    loadDarkModePreference();
 });
-
-// Attendance Functions
-function viewAttendance(subject) {
-    // Close teacher modal
-    closeTeacherModal(subject);
-    
-    // Open class selection for viewing attendance
-    openModal('classSelection');
-    // Store the action type
-    sessionStorage.setItem('attendanceAction', 'view');
-    sessionStorage.setItem('subject', subject);
-}
-
-function markAttendancePrompt() {
-    // Close current teacher modal
-    const modals = document.querySelectorAll('.modal.active');
-    modals.forEach(modal => modal.classList.remove('active'));
-    
-    // Determine subject from the modal that was open
-    let subject = '';
-    const teacherModals = ['physicsModal', 'chemistryModal', 'biologyModal', 'mathematicsModal', 'englishModal', 'socialModal'];
-    teacherModals.forEach(modalId => {
-        const modal = document.getElementById(modalId);
-        if (modal && modal.classList.contains('active')) {
-            subject = modalId.replace('Modal', '');
-        }
-    });
-    
-    // Store the subject
-    sessionStorage.setItem('subject', subject);
-    
-    // Open password modal
-    openModal('password');
-}
-
-function checkPassword() {
-    const password = document.getElementById('attendancePassword').value;
-    const errorElement = document.getElementById('passwordError');
-    
-    if (password === 'Anurag@123') {
-        closeModal('password');
-        openModal('classSelection');
-        sessionStorage.setItem('attendanceAction', 'mark');
-        document.getElementById('attendancePassword').value = '';
-        errorElement.style.display = 'none';
-    } else {
-        errorElement.style.display = 'block';
-    }
-}
-
-function selectClass(classNum) {
-    console.log('selectClass called with:', classNum);
-    closeModal('classSelection');
-    
-    const action = sessionStorage.getItem('attendanceAction');
-    const subject = sessionStorage.getItem('subject');
-    
-    console.log('Action:', action, 'Subject:', subject);
-    
-    // Store the selected class for later use
-    sessionStorage.setItem('selectedClass', classNum);
-    
-    if (action === 'view') {
-        openModal('viewAttendance');
-        showAttendanceRecords(subject, classNum);
-    } else if (action === 'mark') {
-        // Populate the modal content first, then open it
-        console.log('Calling showMarkAttendanceInterface');
-        showMarkAttendanceInterface(subject, classNum);
-        openModal('markAttendance');
-    }
-}
-
-function showAttendanceRecords(subject, classNum) {
-    const recordsDiv = document.getElementById('attendanceRecords');
-    const today = new Date().toISOString().split('T')[0];
-    
-    recordsDiv.innerHTML = `
-        <h3>Present Students - ${subject.charAt(0).toUpperCase() + subject.slice(1)} - Class ${classNum}</h3>
-        <div id="dataSourceIndicator" class="data-indicator"></div>
-        <div class="date-selector">
-            <label for="attendanceViewDate">Select Date:</label>
-            <input type="date" id="attendanceViewDate" value="${today}" onchange="updateAttendanceView('${subject}', ${classNum})">
-        </div>
-        <div class="attendance-summary" id="presentSummary">
-            <div class="summary-item">
-                <span class="summary-label">Total Present:</span>
-                <span class="summary-value" id="present-count-view">0</span>
-            </div>
-        </div>
-        <div class="attendance-table">
-            <table id="attendanceTable">
-                <thead>
-                    <tr>
-                        <th>Serial No.</th>
-                        <th>Roll No.</th>
-                        <th>Student Name</th>
-                        <th>Class</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody id="attendanceTableBody">
-                    <!-- Present students will be populated here -->
-                </tbody>
-            </table>
-        </div>
-    `;
-    
-    // Load initial data for today
-    updateAttendanceView(subject, classNum);
-}
-
-function updateAttendanceView(subject, classNum) {
-    const selectedDate = document.getElementById('attendanceViewDate').value;
-    const tableBody = document.getElementById('attendanceTableBody');
-    const dataIndicator = document.getElementById('dataSourceIndicator');
-    
-    // Check for stored attendance data
-    const attendanceKey = `attendance_${subject}_${classNum}_${selectedDate}`;
-    const storedData = localStorage.getItem(attendanceKey);
-    
-    let attendanceData;
-    let isRealData = false;
-    
-    if (storedData) {
-        // Use stored attendance data
-        isRealData = true;
-        const markedAttendance = JSON.parse(storedData);
-        
-        // Get the actual students for this class
-        const students = getStudentsForClass(classNum);
-        
-        // Create attendance data from marked records and filter only present students
-        attendanceData = students
-            .filter(student => markedAttendance[student.rollNo] === 'Present')
-            .map((student, index) => ({
-                serialNo: index + 1,
-                rollNo: student.rollNo,
-                name: student.name,
-                status: 'Present'
-            }));
-    } else {
-        // Fallback to sample data for demonstration - filter only present students
-        const sampleData = {
-            '2024-01-15': [
-                { rollNo: '001', name: 'Aarav Sharma', status: 'Present' },
-                { rollNo: '002', name: 'Vihaan Gupta', status: 'Present' },
-                { rollNo: '004', name: 'Reyansh Patel', status: 'Present' },
-                { rollNo: '005', name: 'Ishaan Kumar', status: 'Present' },
-                { rollNo: '006', name: 'Advait Joshi', status: 'Present' },
-                { rollNo: '008', name: 'Kabir Verma', status: 'Present' }
-            ],
-            '2024-01-16': [
-                { rollNo: '001', name: 'Aarav Sharma', status: 'Present' },
-                { rollNo: '002', name: 'Vihaan Gupta', status: 'Present' },
-                { rollNo: '003', name: 'Arjun Singh', status: 'Present' },
-                { rollNo: '004', name: 'Reyansh Patel', status: 'Present' },
-                { rollNo: '005', name: 'Ishaan Kumar', status: 'Present' },
-                { rollNo: '006', name: 'Advait Joshi', status: 'Present' },
-                { rollNo: '007', name: 'Arnav Agarwal', status: 'Present' },
-                { rollNo: '008', name: 'Kabir Verma', status: 'Present' }
-            ],
-            '2024-01-17': [
-                { rollNo: '001', name: 'Aarav Sharma', status: 'Present' },
-                { rollNo: '002', name: 'Vihaan Gupta', status: 'Present' },
-                { rollNo: '004', name: 'Reyansh Patel', status: 'Present' },
-                { rollNo: '005', name: 'Ishaan Kumar', status: 'Present' },
-                { rollNo: '006', name: 'Advait Joshi', status: 'Present' },
-                { rollNo: '007', name: 'Arnav Agarwal', status: 'Present' }
-            ]
-        };
-        
-        const rawData = sampleData[selectedDate] || [];
-        attendanceData = rawData
-            .filter(student => student.status === 'Present')
-            .map((student, index) => ({
-                serialNo: index + 1,
-                rollNo: student.rollNo,
-                name: student.name,
-                status: 'Present'
-            }));
-    }
-    
-    // Update data source indicator
-    if (isRealData) {
-        dataIndicator.innerHTML = '<span class="real-data">📝 Real attendance data marked by teacher</span>';
-    } else if (attendanceData.length > 0) {
-        dataIndicator.innerHTML = '<span class="sample-data">📊 Sample data for demonstration</span>';
-    } else {
-        dataIndicator.innerHTML = '<span class="no-data">❌ No present students found for this date</span>';
-    }
-    
-    // Update present count
-    document.getElementById('present-count-view').textContent = attendanceData.length;
-    
-    // Generate table rows
-    const rows = attendanceData.map(student => `
-        <tr>
-            <td>${student.serialNo}</td>
-            <td>${student.rollNo}</td>
-            <td>${student.name}</td>
-            <td>${classNum}</td>
-            <td>${selectedDate}</td>
-        </tr>
-    `).join('');
-    
-    tableBody.innerHTML = rows;
-}
-
-function showMarkAttendanceInterface(subject, classNum) {
-    console.log('showMarkAttendanceInterface called with:', subject, classNum);
-    
-    const contentDiv = document.getElementById('markAttendanceContent');
-    if (!contentDiv) {
-        console.error('markAttendanceContent div not found');
-        return;
-    }
-    
-    const today = new Date().toLocaleDateString('en-IN', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    });
-    
-    // Get students for the selected class
-    const students = getStudentsForClass(classNum);
-    
-    // Store students globally for other functions
-    window.currentStudents = students;
-    
-    // Generate table rows dynamically
-    const tableRows = students.map((student, index) => `
-        <tr>
-            <td>${index + 1}</td>
-            <td>${student.rollNo}</td>
-            <td>${student.name}</td>
-            <td>${classNum}</td>
-            <td id="status-${student.rollNo}">Not Marked</td>
-            <td>
-                <div class="attendance-buttons">
-                    <button class="btn-present" onclick="markStudent(${student.rollNo}, 'Present')">Present</button>
-                    <button class="btn-absent" onclick="markStudent(${student.rollNo}, 'Absent')">Absent</button>
-                </div>
-            </td>
-        </tr>
-    `).join('');
-    
-    contentDiv.innerHTML = `
-        <div class="attendance-header">
-            <h3>Mark Attendance for ${subject.charAt(0).toUpperCase() + subject.slice(1)} - Class ${classNum}</h3>
-            <div class="attendance-date">Date: ${today}</div>
-        </div>
-        <div class="attendance-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Serial No.</th>
-                        <th>Roll Number</th>
-                        <th>Student Name</th>
-                        <th>Class</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${tableRows}
-                </tbody>
-            </table>
-        </div>
-        <div class="attendance-summary">
-            <div class="summary-item">
-                <span class="summary-label">Total Students:</span>
-                <span class="summary-value" id="total-students">${students.length}</span>
-            </div>
-            <div class="summary-item">
-                <span class="summary-label">Present:</span>
-                <span class="summary-value" id="present-count">0</span>
-            </div>
-            <div class="summary-item">
-                <span class="summary-label">Absent:</span>
-                <span class="summary-value" id="absent-count">0</span>
-            </div>
-            <div class="summary-item">
-                <span class="summary-label">Not Marked:</span>
-                <span class="summary-value" id="not-marked-count">${students.length}</span>
-            </div>
-        </div>
-        <div class="attendance-actions">
-            <button class="btn-primary" onclick="submitAttendance()">Submit Attendance</button>
-            <button class="btn-secondary" onclick="markAllPresent()">Mark All Present</button>
-            <button class="btn-secondary" onclick="clearAll()">Clear All</button>
-        </div>
-    `;
-    
-    console.log('Content populated successfully');
-    
-    // Initialize attendance tracking
-    window.attendanceData = {};
-    window.totalStudents = students.length;
-}
-
-function getStudentsForClass(classNum) {
-    // Sample student data for each class
-    const classStudents = {
-        6: [
-            { rollNo: '001', name: 'Aarav Sharma' },
-            { rollNo: '002', name: 'Vihaan Gupta' },
-            { rollNo: '003', name: 'Arjun Singh' },
-            { rollNo: '004', name: 'Reyansh Patel' },
-            { rollNo: '005', name: 'Ishaan Kumar' },
-            { rollNo: '006', name: 'Advait Joshi' },
-            { rollNo: '007', name: 'Arnav Agarwal' },
-            { rollNo: '008', name: 'Kabir Verma' },
-            { rollNo: '009', name: 'Anaya Mishra' },
-            { rollNo: '010', name: 'Diya Choudhary' }
-        ],
-        7: [
-            { rollNo: '101', name: 'Saanvi Reddy' },
-            { rollNo: '102', name: 'Aanya Nair' },
-            { rollNo: '103', name: 'Pari Mehta' },
-            { rollNo: '104', name: 'Anika Shah' },
-            { rollNo: '105', name: 'Navya Jain' },
-            { rollNo: '106', name: 'Aaradhya Rao' },
-            { rollNo: '107', name: 'Myra Kapoor' },
-            { rollNo: '108', name: 'Sara Khan' },
-            { rollNo: '109', name: 'Zara Ali' },
-            { rollNo: '110', name: 'Riya Das' }
-        ],
-        8: [
-            { rollNo: '201', name: 'Aditya Roy' },
-            { rollNo: '202', name: 'Veer Malhotra' },
-            { rollNo: '203', name: 'Rohan Saxena' },
-            { rollNo: '204', name: 'Aryan Chauhan' },
-            { rollNo: '205', name: 'Devansh Bhatia' },
-            { rollNo: '206', name: 'Rudra Thakur' },
-            { rollNo: '207', name: 'Atharv Pandey' },
-            { rollNo: '208', name: 'Kartik Yadav' },
-            { rollNo: '209', name: 'Shaurya Gill' },
-            { rollNo: '210', name: 'Prateek Sharma' }
-        ],
-        9: [
-            { rollNo: '301', name: 'Ishita Singh' },
-            { rollNo: '302', name: 'Kavya Gupta' },
-            { rollNo: '303', name: 'Anushka Patel' },
-            { rollNo: '304', name: 'Priya Kumar' },
-            { rollNo: '305', name: 'Sneha Joshi' },
-            { rollNo: '306', name: 'Tanya Agarwal' },
-            { rollNo: '307', name: 'Ritika Verma' },
-            { rollNo: '308', name: 'Pooja Mishra' },
-            { rollNo: '309', name: 'Neha Choudhary' },
-            { rollNo: '310', name: 'Simran Reddy' }
-        ],
-        10: [
-            { rollNo: '401', name: 'Rahul Nair' },
-            { rollNo: '402', name: 'Vikram Mehta' },
-            { rollNo: '403', name: 'Arjun Shah' },
-            { rollNo: '404', name: 'Karan Jain' },
-            { rollNo: '405', name: 'Rishi Rao' },
-            { rollNo: '406', name: 'Amit Kapoor' },
-            { rollNo: '407', name: 'Suresh Khan' },
-            { rollNo: '408', name: 'Rajesh Ali' },
-            { rollNo: '409', name: 'Manoj Das' },
-            { rollNo: '410', name: 'Sunil Roy' }
-        ],
-        11: [
-            { rollNo: '501', name: 'Nisha Malhotra' },
-            { rollNo: '502', name: 'Meera Saxena' },
-            { rollNo: '503', name: 'Kritika Chauhan' },
-            { rollNo: '504', name: 'Alisha Bhatia' },
-            { rollNo: '505', name: 'Shreya Thakur' },
-            { rollNo: '506', name: 'Divya Pandey' },
-            { rollNo: '507', name: 'Ruchi Yadav' },
-            { rollNo: '508', name: 'Swati Gill' },
-            { rollNo: '509', name: 'Preeti Sharma' },
-            { rollNo: '510', name: 'Anjali Singh' }
-        ],
-        12: [
-            { rollNo: '601', name: 'Aman Gupta' },
-            { rollNo: '602', name: 'Rohit Patel' },
-            { rollNo: '603', name: 'Sandeep Kumar' },
-            { rollNo: '604', name: 'Vivek Joshi' },
-            { rollNo: '605', name: 'Naveen Agarwal' },
-            { rollNo: '606', name: 'Deepak Verma' },
-            { rollNo: '607', name: 'Raj Kumar' },
-            { rollNo: '608', name: 'Santosh Mishra' },
-            { rollNo: '609', name: 'Vinod Choudhary' },
-            { rollNo: '610', name: 'Mahesh Reddy' }
-        ]
-    };
-    
-    return classStudents[classNum] || [
-        { rollNo: '001', name: 'Sample Student 1' },
-        { rollNo: '002', name: 'Sample Student 2' },
-        { rollNo: '003', name: 'Sample Student 3' }
-    ];
-}
-
-function submitAttendance() {
-    const attendanceData = window.attendanceData || {};
-    const totalStudents = window.totalStudents || 8;
-    const markedStudents = Object.keys(attendanceData).length;
-    
-    if (markedStudents === 0) {
-        alert('Please mark attendance for at least one student before submitting.');
-        return;
-    }
-    
-    if (markedStudents < totalStudents) {
-        if (!confirm(`You have marked ${markedStudents} out of ${totalStudents} students. Do you want to submit anyway?`)) {
-            return;
-        }
-    }
-    
-    // Save attendance data to localStorage
-    const subject = sessionStorage.getItem('subject');
-    const classNum = sessionStorage.getItem('selectedClass');
-    const today = new Date().toISOString().split('T')[0];
-    
-    const attendanceKey = `attendance_${subject}_${classNum}_${today}`;
-    localStorage.setItem(attendanceKey, JSON.stringify(attendanceData));
-    
-    alert('Attendance submitted successfully!');
-    closeModal('markAttendance');
-}
-
-function markStudent(rollNo, status) {
-    const statusCell = document.getElementById(`status-${rollNo}`);
-    const presentBtn = statusCell.nextElementSibling.querySelector('.btn-present');
-    const absentBtn = statusCell.nextElementSibling.querySelector('.btn-absent');
-    
-    // Update status display
-    if (status === 'Present') {
-        statusCell.innerHTML = '<span class="status-present">Present</span>';
-        statusCell.className = 'status-present-cell';
-        presentBtn.classList.add('active');
-        absentBtn.classList.remove('active');
-    } else {
-        statusCell.innerHTML = '<span class="status-absent">Absent</span>';
-        statusCell.className = 'status-absent-cell';
-        absentBtn.classList.add('active');
-        presentBtn.classList.remove('active');
-    }
-    
-    // Store attendance data
-    if (!window.attendanceData) window.attendanceData = {};
-    window.attendanceData[rollNo] = status;
-    
-    // Update summary
-    updateAttendanceSummary();
-}
-
-function updateAttendanceSummary() {
-    const attendanceData = window.attendanceData || {};
-    const totalStudents = window.totalStudents || 0;
-    const presentCount = Object.values(attendanceData).filter(status => status === 'Present').length;
-    const absentCount = Object.values(attendanceData).filter(status => status === 'Absent').length;
-    const notMarkedCount = totalStudents - presentCount - absentCount;
-    
-    document.getElementById('present-count').textContent = presentCount;
-    document.getElementById('absent-count').textContent = absentCount;
-    document.getElementById('not-marked-count').textContent = notMarkedCount;
-}
-
-function markAllPresent() {
-    const students = window.currentStudents || [];
-    students.forEach(student => {
-        markStudent(student.rollNo, 'Present');
-    });
-}
-
-function clearAll() {
-    if (confirm('Are you sure you want to clear all attendance marks?')) {
-        window.attendanceData = {};
-        
-        const students = window.currentStudents || [];
-        students.forEach(student => {
-            const statusCell = document.getElementById(`status-${student.rollNo}`);
-            if (statusCell) {
-                const buttons = statusCell.nextElementSibling.querySelectorAll('button');
-                
-                statusCell.innerHTML = 'Not Marked';
-                statusCell.className = '';
-                buttons.forEach(btn => btn.classList.remove('active'));
-            }
-        });
-        
-        updateAttendanceSummary();
-    }
-}

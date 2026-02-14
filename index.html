@@ -33,8 +33,14 @@
             <a href="#" class="nav-link" onclick="showSection('gallery'); return false;">Gallery</a>
             <a href="#" class="nav-link" onclick="showSection('about'); return false;">About</a>
             <a href="#" class="nav-link" onclick="openModal('contact'); return false;">Contact</a>
+            
+            <!-- Dark Mode Toggle Button -->
+            <button class="theme-toggle-btn" id="themeToggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+                <i class="fas fa-moon"></i>
+            </button>
+            
             <div class="user-profile" onclick="openModal('founder')">
-                <div class="user-avatar">AK</div>
+                <div class="user-avatar">CPC</div>
                 <div class="user-info">
                     <h4>FOUNDER</h4>
                     <p>Abhishek Raj</p>
@@ -56,34 +62,110 @@
                     <button onclick="toggleSidebar()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--dark); padding: 5px;">✕</button>
                 </div>
                 <nav class="nav-section">
-                    <a href="#" class="nav-item">
+                    <!-- <a href="#" class="nav-item" onclick="toggleSubmenu('academics'); return false;">
                         <span>Academics</span>
                         <span class="arrow">›</span>
-                    </a>
-                    <a href="#" class="nav-item">
+                    </a> -->
+                    <!-- <div class="submenu" id="academics-submenu">
+                        <div class="submenu-header">
+                            <h4>Academics</h4>
+                            <button class="submenu-close" onclick="closeSubmenu('academics'); return false;">✕</button>
+                        </div>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('academic-calendar'); return false;">📅 Academic Calendar</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('course-materials'); return false;">📚 Course Materials</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('syllabus'); return false;">📖 Syllabus</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('class-schedule'); return false;">🕐 Class Schedule</a>
+                    </div>
+
+                    <a href="#" class="nav-item" onclick="toggleSubmenu('accounts'); return false;">
                         <span>Accounts</span>
                         <span class="arrow">›</span>
                     </a>
-                    <a href="#" class="nav-item">
+                    <div class="submenu" id="accounts-submenu">
+                        <div class="submenu-header">
+                            <h4>Accounts</h4>
+                            <button class="submenu-close" onclick="closeSubmenu('accounts'); return false;">✕</button>
+                        </div>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('fee-status'); return false;">💰 Fee Status</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('fee-payment'); return false;">💳 Fee Payment</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('receipts'); return false;">🧾 Receipts</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('financial-reports'); return false;">📊 Financial Reports</a>
+                    </div>
+
+                    <a href="#" class="nav-item" onclick="toggleSubmenu('administration'); return false;">
                         <span>Administration</span>
                         <span class="arrow">›</span>
                     </a>
-                    <a href="#" class="nav-item">
+                    <div class="submenu" id="administration-submenu">
+                        <div class="submenu-header">
+                            <h4>Administration</h4>
+                            <button class="submenu-close" onclick="closeSubmenu('administration'); return false;">✕</button>
+                        </div>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('staff-directory'); return false;">👥 Staff Directory</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('notices'); return false;">📢 Notices</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('leave-management'); return false;">📝 Leave Management</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('certificates'); return false;">🎖️ Certificates</a>
+                    </div>
+
+                    <a href="#" class="nav-item" onclick="toggleSubmenu('elibrary'); return false;">
                         <span>E Library</span>
                         <span class="arrow">›</span>
                     </a>
-                    <a href="#" class="nav-item">
+                    <div class="submenu" id="elibrary-submenu">
+                        <div class="submenu-header">
+                            <h4>E Library</h4>
+                            <button class="submenu-close" onclick="closeSubmenu('elibrary'); return false;">✕</button>
+                        </div>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('ebooks'); return false;">📱 E-Books</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('journals'); return false;">📰 Journals</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('research-papers'); return false;">🔬 Research Papers</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('video-lectures'); return false;">🎥 Video Lectures</a>
+                    </div>
+
+                    <a href="#" class="nav-item" onclick="toggleSubmenu('examination'); return false;">
                         <span>Examination</span>
                         <span class="arrow">›</span>
                     </a>
-                    <a href="#" class="nav-item">
+                    <div class="submenu" id="examination-submenu">
+                        <div class="submenu-header">
+                            <h4>Examination</h4>
+                            <button class="submenu-close" onclick="closeSubmenu('examination'); return false;">✕</button>
+                        </div>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('exam-schedule'); return false;">📅 Exam Schedule</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('admit-card'); return false;">🎫 Admit Card</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('results'); return false;">📈 Results</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('previous-papers'); return false;">📄 Previous Papers</a>
+                    </div>
+
+                    <a href="#" class="nav-item" onclick="toggleSubmenu('hostel'); return false;">
                         <span>Hostel</span>
                         <span class="arrow">›</span>
                     </a>
-                    <a href="#" class="nav-item">
+                    <div class="submenu" id="hostel-submenu">
+                        <div class="submenu-header">
+                            <h4>Hostel</h4>
+                            <button class="submenu-close" onclick="closeSubmenu('hostel'); return false;">✕</button>
+                        </div>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('hostel-info'); return false;">🏠 Hostel Info</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('room-allocation'); return false;">🛏️ Room Allocation</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('hostel-fees'); return false;">💵 Hostel Fees</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('hostel-complaints'); return false;">⚠️ Complaints</a>
+                    </div>
+
+                    <a href="#" class="nav-item" onclick="toggleSubmenu('library'); return false;">
                         <span>Library</span>
                         <span class="arrow">›</span>
                     </a>
+                    <div class="submenu" id="library-submenu">
+                        <div class="submenu-header">
+                            <h4>Library</h4>
+                            <button class="submenu-close" onclick="closeSubmenu('library'); return false;">✕</button>
+                        </div>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('book-catalog'); return false;">📚 Book Catalog</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('issue-return'); return false;">📤 Issue/Return</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('member-info'); return false;">💳 Member Info</a>
+                        <a href="#" class="submenu-item" onclick="handleMenuClick('fine-dues'); return false;">⚡ Fine & Dues</a>
+                    </div> -->
                 </nav>
             </div>
 
@@ -152,14 +234,13 @@
                         <div class="action-card-top">
                             <div class="icon-large">🎓</div>
                             <div class="action-card-content">
-                                <h3>Admissions</h3>
-                                <p>Check admission details</p>
+                                <h3>Attendence</h3>
+                                <p>Check attendance details</p>
                             </div>
                         </div>
                         <a href="voterid.pdf" target="_blank" class="btn-action">View Details</a>
                     </div>
-
-                    <div class="action-card warning" onclick="openModal('contact')">
+                    <div class="action-card warning">
                         <div class="action-card-top">
                             <div class="icon-large">📞</div>
                             <div class="action-card-content">
@@ -176,9 +257,11 @@
                         <h2>ABOUT CPC:</h2>
                         <h4>
 
-                        Concepts Classes Daudnagar is a leading institute for students from Classes 6 to 12 and JEE/NEET aspirants. Founded by <strong>Abhishek Kumar</strong>, it follows the effective <strong>Kota teaching pattern</strong>, focusing on discipline, smart study, and results. With experienced faculty, the institute ensures strong concepts, regular practice, doubt-clearing, and weekly tests. For junior classes, it builds a solid academic foundation. 
-                        <br><br><br>
-                        कॉन्सेप्ट्स क्लासेज़ दाउदनगर कक्षा 6 से 12 तक के छात्रों और JEE/NEET अभ्यर्थियों के लिए एक प्रमुख संस्थान है। <strong>अभिषेक कुमार</strong> द्वारा स्थापित यह संस्थान प्रभावी <strong></strong>कोटा टीचिंग पैटर्न</strong> का पालन करता है, जो अनुशासन, स्मार्ट स्टडी और परिणामों पर केंद्रित है। अनुभवी फैकल्टी के साथ यह मज़बूत कॉन्सेप्ट, नियमित अभ्यास, डाउट-क्लियरिंग और साप्ताहिक टेस्ट सुनिश्चित करता है। जूनियर कक्षाओं के लिए यह मजबूत शैक्षणिक आधार बनाता है।
+                      <strong>Concepts Classes Daudnagar</strong> is a leading institute for students of Classes 6 to 12 and JEE/NEET aspirants. Founded by <strong>Abhishek Raj</strong>, it follows the effective <strong>Kota teaching pattern</strong>, focusing on discipline, smart study, and result-oriented preparation. With experienced and dedicated faculty, the institute ensures strong conceptual understanding through structured teaching, regular practice, doubt-clearing sessions, and weekly tests that help students stay consistent and exam-ready. For junior classes, it builds a solid academic foundation by nurturing analytical skills and confidence from an early stage. Growing under the blessings and guidance of world-renowned mathematician and <strong>Super 30 founder</strong>, <strong>Padma Shri Anand Kumar</strong>, Concepts Classes Daudnagar continues to inspire students to aim higher and achieve academic excellence.
+
+                        <br><br>
+                        <strong>कॉन्सेप्ट्स क्लासेस दाउदनगर</strong> कक्षा 6 से 12 के छात्र तथा JEE/NEET अभ्यर्थियों के लिए एक अग्रणी संस्थान है। <strong>अभिषेक राज</strong> द्वारा स्थापित यह संस्था प्रभावी <strong>कोटा टीचिंग पैटर्न</strong> का पालन करती है, जो अनुशासन, स्मार्ट स्टडी और परिणाम-उन्मुख तैयारी पर केंद्रित है। अनुभवी और समर्पित फैकल्टी के मार्गदर्शन में यहाँ नियमित अभ्यास, संरचित अध्यापन, डाउट-क्लियरिंग सत्र और साप्ताहिक टेस्ट के माध्यम से मजबूत कॉन्सेप्ट्स विकसित किए जाते हैं। जूनियर कक्षाओं के लिए यह संस्था शुरुआती स्तर से ही मजबूत शैक्षणिक आधार, विश्लेषणात्मक कौशल और आत्मविश्वास का विकास करती है। विश्व-प्रसिद्ध गणितज्ञ और <strong>सुपर 30</strong> के संस्थापक <strong>पद्मश्री आनंद कुमार</strong> के आशीर्वाद और मार्गदर्शन में कॉन्सेप्ट्स क्लासेस दाउदनगर निरंतर छात्रों को उच्च लक्ष्य प्राप्त करने और शैक्षणिक उत्कृष्टता हासिल करने के लिए प्रेरित करता है।
+
 
                         </h4>
                     </div>
@@ -294,7 +377,7 @@
                         <div class="about-section">
                             <h2>📚 About Us</h2>
                             <p>
-                                Founded by <strong>Abhishek Kumar</strong>, Concepts Classes follows the highly effective <strong>Kota teaching pattern</strong>, known for its disciplined approach, smart study techniques, and result-oriented methodology. With a team of experienced faculty, we focus on strengthening foundational concepts, regular practice, and personalized doubt-clearing sessions.
+                                Founded by <strong>Abhishek Raj</strong>, Concepts Classes follows the highly effective <strong>Kota teaching pattern</strong>, known for its disciplined approach, smart study techniques, and result-oriented methodology. With a team of experienced faculty, we focus on strengthening foundational concepts, regular practice, and personalized doubt-clearing sessions.
                             </p>
                             <p>
                                 The institute provides structured study materials, weekly tests, and performance analysis to help students track their progress effectively. For junior classes, we build strong fundamentals in Maths, Science, and logical thinking, while senior students receive specialized guidance for board exams and competitive entrance tests.
@@ -341,13 +424,25 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Menu Content Modal Section -->
+                <div id="menu-content" class="section" style="display: none;">
+                    <div class="menu-content-container">
+                        <h1 id="menu-content-title"></h1>
+                        <div id="menu-content-body"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <div class="footer">
-        <h3>CREATED BY: ANURAG KUMAR<br>[EX-CPCIAN]</h3>
+    <!-- Copyright Footer -->
+    <div class="copyright-footer">
+        <div class="copyright-content">
+            <p>&copy; 2025 <strong>Concepts Classes</strong>. All rights reserved.</p>
+            <p>Bhakharuan More, Daudnagar | Phone: +91 8228835898 | Email: abhishek12796@icloud.com</p>
+            <p style="font-size: 12px; margin-top: 8px; opacity: 0.8;">Designed & Developed by <strong>Anurag Kumar</strong> | Website by CPC</p>
+        </div>
     </div>
 
     <!-- Contact Modal -->
@@ -418,7 +513,7 @@
                         </div>
                         <div class="founder-detail-card">
                             <label>🎓 Qualification</label>
-                            <div class="value">M.Ed, B.Ed</div>
+                            <div class="value">B.Tech</div>
                         </div>
                         <div class="founder-detail-card">
                             <label>⏰ Experience</label>
@@ -440,12 +535,6 @@
                             <a href="https://facebook.com/abhishek.raj.437105" target="_blank" class="social-link facebook" title="Facebook">
                                 <i class="fab fa-facebook-f" style="color: white;"></i>
                             </a>
-                            <!-- <a href="https://twitter.com" target="_blank" class="social-link twitter" title="Twitter">
-                                <i class="fab fa-twitter" style="color: white;"></i>
-                            </a>
-                            <a href="https://linkedin.com" target="_blank" class="social-link linkedin" title="LinkedIn">
-                                <i class="fab fa-linkedin-in" style="color: white;"></i>
-                            </a> -->
                             <a href="https://www.instagram.com/abhishek_educator/" target="_blank" class="social-link instagram" title="Instagram">
                                 <i class="fab fa-instagram" style="color: white;"></i>
                             </a>
@@ -532,10 +621,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="attendance-options">
+                <!-- <div class="attendance-options">
                     <button class="btn-attendance" onclick="viewAttendance('physics')">View Attendance</button>
                     <button class="btn-attendance" onclick="markAttendancePrompt()">Mark Attendance</button>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -578,10 +667,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="attendance-options">
+                <!-- <div class="attendance-options">
                     <button class="btn-attendance" onclick="viewAttendance('chemistry')">View Attendance</button>
                     <button class="btn-attendance" onclick="markAttendancePrompt()">Mark Attendance</button>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -624,10 +713,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="attendance-options">
+                <!-- <div class="attendance-options">
                     <button class="btn-attendance" onclick="viewAttendance('biology')">View Attendance</button>
                     <button class="btn-attendance" onclick="markAttendancePrompt()">Mark Attendance</button>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -699,10 +788,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="attendance-options">
-                    <button class="btn-attendance" onclick="viewAttendance('mathematics')">View Attendance</button>
-                    <button class="btn-attendance" onclick="markAttendancePrompt()">Mark Attendance</button>
-                </div>
             </div>
         </div>
     </div>
@@ -745,10 +830,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="attendance-options">
-                    <button class="btn-attendance" onclick="viewAttendance('english')">View Attendance</button>
-                    <button class="btn-attendance" onclick="markAttendancePrompt()">Mark Attendance</button>
-                </div>
             </div>
         </div>
     </div>
@@ -790,99 +871,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="attendance-options">
-                    <button class="btn-attendance" onclick="viewAttendance('social')">View Attendance</button>
-                    <button class="btn-attendance" onclick="markAttendancePrompt()">Mark Attendance</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Password Modal for Mark Attendance -->
-    <div id="passwordModal" class="modal">
-        <div class="modal-content small-modal">
-            <div class="modal-header">
-                <h2>🔒 Enter Password</h2>
-                <button class="close-btn" onclick="closeModal('password')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="password-form">
-                    <input type="password" id="attendancePassword" placeholder="Enter password" class="password-input">
-                    <button class="btn-primary" onclick="checkPassword()">Submit</button>
-                    <p id="passwordError" class="error-message" style="display: none;">Incorrect password. Please try again.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Subject Selection Modal -->
-    <div id="subjectSelectionModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>📖 Select Subject</h2>
-                <button class="close-btn" onclick="closeModal('subjectSelection')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="subject-grid">
-                    <button class="subject-btn" onclick="selectSubject('physics')">Physics</button>
-                    <button class="subject-btn" onclick="selectSubject('chemistry')">Chemistry</button>
-                    <button class="subject-btn" onclick="selectSubject('biology')">Biology</button>
-                    <button class="subject-btn" onclick="selectSubject('mathematics')">Mathematics</button>
-                    <button class="subject-btn" onclick="selectSubject('english')">English</button>
-                    <button class="subject-btn" onclick="selectSubject('social')">Social Studies</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Class Selection Modal -->
-    <div id="classSelectionModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>📚 Select Class</h2>
-                <button class="close-btn" onclick="closeModal('classSelection')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="class-grid">
-                    <button class="class-btn" onclick="selectClass(6)">Class 6</button>
-                    <button class="class-btn" onclick="selectClass(7)">Class 7</button>
-                    <button class="class-btn" onclick="selectClass(8)">Class 8</button>
-                    <button class="class-btn" onclick="selectClass(9)">Class 9</button>
-                    <button class="class-btn" onclick="selectClass(10)">Class 10</button>
-                    <button class="class-btn" onclick="selectClass(11)">Class 11</button>
-                    <button class="class-btn" onclick="selectClass(12)">Class 12</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- View Attendance Modal -->
-    <div id="viewAttendanceModal" class="modal">
-        <div class="modal-content large-modal">
-            <div class="modal-header">
-                <h2>📊 Attendance Records</h2>
-                <button class="close-btn" onclick="closeModal('viewAttendance')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div id="attendanceRecords">
-                    <!-- Attendance records will be populated here -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Mark Attendance Modal -->
-    <div id="markAttendanceModal" class="modal">
-        <div class="modal-content large-modal">
-            <div class="modal-header">
-                <h2>✅ Mark Attendance</h2>
-                <button class="close-btn" onclick="closeModal('markAttendance')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div id="markAttendanceContent">
-                    <!-- Attendance marking interface will be populated here -->
                 </div>
             </div>
         </div>
@@ -974,7 +962,7 @@
             </div>
         </div>
     </div>
-     <script src="script.js"></script>
+
+    <script src="script.js"></script>
 </body>
 </html>
-
