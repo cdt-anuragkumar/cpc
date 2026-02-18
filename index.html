@@ -238,7 +238,7 @@
                                 <p>Check attendance details</p>
                             </div>
                         </div>
-                        <a href="voterid.pdf" target="_blank" class="btn-action">View Details</a>
+                        <a href="#" class="btn-action" onclick="showSection('attendance'); return false;">View Details</a>
                     </div>
                     <div class="action-card warning">
                         <div class="action-card-top">
@@ -425,6 +425,174 @@
                     </div>
                 </div>
 
+                <!-- Attendance Section -->
+                <div id="attendance" class="section">
+                    <!-- MAIN MENU SCREEN -->
+                    <div id="attendanceMainMenu" class="attendance-menu-screen">
+                        <div class="attendance-menu-card">
+                            <div class="attendance-menu-icon">📚</div>
+                            <h1>Attendance Manager</h1>
+                            <p>Select an option below to manage school attendance</p>
+                            
+                            <div class="attendance-menu-options">
+                                <button class="attendance-menu-btn add-student" onclick="startAddStudent()">
+                                    ➕ Add Student
+                                </button>
+                                <button class="attendance-menu-btn mark-attendance" onclick="startMarkAttendance()">
+                                    ✓ Mark Attendance
+                                </button>
+                                <button class="attendance-menu-btn view-attendance" onclick="startViewAttendance()">
+                                    👁️ View Student
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PASSWORD SCREEN FOR ADD STUDENT -->
+                    <div id="passwordScreen" class="attendance-login-screen attendance-hidden">
+                        <div class="attendance-login-card">
+                            <div class="attendance-login-icon">🔒</div>
+                            <h1>Secure Access</h1>
+                            <p>Enter password to add students</p>
+                            
+                            <form id="passwordForm" onsubmit="validatePassword(event)">
+                                <div class="attendance-form-group">
+                                    <label>Password</label>
+                                    <input type="password" id="passwordInputField" placeholder="Enter password" required>
+                                    <span class="attendance-password-toggle" onclick="togglePasswordVisibility()">👁️</span>
+                                </div>
+                                <button type="submit" class="attendance-btn attendance-btn-primary">🔓 Unlock</button>
+                                <button type="button" class="attendance-btn attendance-btn-secondary" onclick="goBackToMainMenu()">← Back</button>
+                            </form>
+
+                            <div class="attendance-demo-note">
+                                Demo Password: <strong>Anurag@123</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CLASS SELECTOR FOR ADD STUDENT -->
+                    <div id="addStudentClassSelector" class="attendance-screen attendance-hidden">
+                        <div class="attendance-container">
+                            <div class="attendance-back-header">
+                                <button class="attendance-back-btn" onclick="goBackToMainMenu()">← Back</button>
+                                <h2>Select Class to Add Student</h2>
+                            </div>
+                            <div class="attendance-class-selector">
+                                <div class="attendance-class-buttons" id="addStudentClassButtons"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ADD STUDENT FORM SCREEN -->
+                    <div id="addStudentFormScreen" class="attendance-screen attendance-hidden">
+                        <div class="attendance-container">
+                            <div class="attendance-back-header">
+                                <button class="attendance-back-btn" onclick="goBackToClassSelection('addStudent')">← Back</button>
+                                <h2>Add Student to Class <span id="addStudentClassDisplay">6</span></h2>
+                            </div>
+                            <div class="attendance-form-card" style="max-width: 500px; margin: 0 auto;">
+                                <form id="studentDetailsForm" onsubmit="addNewStudent(event)">
+                                    <div class="attendance-form-group">
+                                        <label>Student Name</label>
+                                        <input type="text" id="studentNameInput" placeholder="Full Name" required>
+                                    </div>
+                                    <div class="attendance-form-group">
+                                        <label>Roll Number</label>
+                                        <input type="number" id="studentRollInput" placeholder="e.g., 1, 2, 3..." required>
+                                    </div>
+                                    <button type="submit" class="attendance-btn attendance-btn-success">➕ Add Student</button>
+                                </form>
+                                <div class="attendance-student-count">
+                                    <strong id="studentCountDisplay">0</strong>/100 students in class
+                                </div>
+                                <div id="studentListInForm" style="margin-top: 20px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TEACHER NAME ENTRY FOR MARK ATTENDANCE -->
+                    <div id="teacherNameScreen" class="attendance-screen attendance-hidden">
+                        <div class="attendance-container">
+                            <div class="attendance-back-header">
+                                <button class="attendance-back-btn" onclick="goBackToMainMenu()">← Back</button>
+                                <h2>Mark Attendance</h2>
+                            </div>
+                            <div class="attendance-form-card" style="max-width: 500px; margin: 0 auto;">
+                                <h3>👨‍🏫 Enter Your Name</h3>
+                                <form id="teacherNameForm" onsubmit="proceedToClassSelection(event)">
+                                    <div class="attendance-form-group">
+                                        <label>Teacher Name</label>
+                                        <input type="text" id="teacherNameInput" placeholder="e.g., Mr. Sharma, Mrs. Gupta" required>
+                                    </div>
+                                    <button type="submit" class="attendance-btn attendance-btn-primary">✓ Continue</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CLASS SELECTOR FOR MARK ATTENDANCE -->
+                    <div id="markAttendanceClassSelector" class="attendance-screen attendance-hidden">
+                        <div class="attendance-container">
+                            <div class="attendance-back-header">
+                                <button class="attendance-back-btn" onclick="goBackToMainMenu()">← Back</button>
+                                <h2>Select Class to Mark Attendance</h2>
+                                <p style="color: #667eea; font-size: 14px;">Teacher: <strong id="displayTeacherName"></strong></p>
+                            </div>
+                            <div class="attendance-class-selector">
+                                <div class="attendance-class-buttons" id="markAttendanceClassButtons"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MARK ATTENDANCE SCREEN -->
+                    <div id="markAttendanceScreen" class="attendance-screen attendance-hidden">
+                        <div class="attendance-container">
+                            <div class="attendance-back-header">
+                                <button class="attendance-back-btn" onclick="goBackToClassSelection('markAttendance')">← Back</button>
+                                <h2>Mark Attendance - Class <span id="markAttendanceClassDisplay">6</span></h2>
+                            </div>
+                            <div id="holidayWarning"></div>
+                            <div id="attendanceListForMarking"></div>
+                            <div class="attendance-submit-section">
+                                <button class="attendance-btn attendance-btn-success" onclick="submitMarkedAttendance()">✓ Submit Attendance</button>
+                                <button class="attendance-btn attendance-btn-secondary" onclick="resetMarkedAttendance()">↻ Reset All</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CLASS SELECTOR FOR VIEW ATTENDANCE -->
+                    <div id="viewAttendanceClassSelector" class="attendance-screen attendance-hidden">
+                        <div class="attendance-container">
+                            <div class="attendance-back-header">
+                                <button class="attendance-back-btn" onclick="goBackToMainMenu()">← Back</button>
+                                <h2>Select Class to View Attendance</h2>
+                            </div>
+                            <div class="attendance-class-selector">
+                                <div class="attendance-class-buttons" id="viewAttendanceClassButtons"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VIEW ATTENDANCE SCREEN -->
+                    <div id="viewAttendanceScreen" class="attendance-screen attendance-hidden">
+                        <div class="attendance-container">
+                            <div class="attendance-back-header">
+                                <button class="attendance-back-btn" onclick="goBackToClassSelection('viewAttendance')">← Back</button>
+                                <h2>Attendance Records - Class <span id="viewAttendanceClassDisplay">6</span></h2>
+                            </div>
+                            <div class="attendance-date-filter-section">
+                                <label style="font-size: 12px; color: #667eea;">Select Date</label>
+                                <input type="date" id="attendanceViewDateFilter" onchange="updateViewAttendanceTable()">
+                            </div>
+                            <div id="viewAttendanceTableContainer"></div>
+                        </div>
+                    </div>
+
+                    <!-- DASHBOARD (Hidden, kept for compatibility) -->
+                    <div id="dashboard" class="attendance-dashboard" style="display: none;"></div>
+                </div>
+
                 <!-- Menu Content Modal Section -->
                 <div id="menu-content" class="section" style="display: none;">
                     <div class="menu-content-container">
@@ -499,7 +667,7 @@
                     <div class="founder-name-large">ABHISHEK RAJ
                         <h6>FOUNDER & DIRECTOR</h6>
                     </div>
-                    <div class="founder-title-large">Senior Physics Teacher / Mentor of many IITians /NITians/ Medicos and Board Toppers 8+ years of experience in education field</div>
+                    <div class="founder-title-large">Senior Physics Teacher / Mentor of many IITians /NITians/ Medicos and Board Toppers/ 8+ years of experience in education field</div>
                     </div>
                     
                     <div class="founder-details-grid">
@@ -621,10 +789,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="attendance-options">
-                    <button class="btn-attendance" onclick="viewAttendance('physics')">View Attendance</button>
-                    <button class="btn-attendance" onclick="markAttendancePrompt()">Mark Attendance</button>
-                </div> -->
             </div>
         </div>
     </div>
@@ -667,10 +831,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="attendance-options">
-                    <button class="btn-attendance" onclick="viewAttendance('chemistry')">View Attendance</button>
-                    <button class="btn-attendance" onclick="markAttendancePrompt()">Mark Attendance</button>
-                </div> -->
             </div>
         </div>
     </div>
@@ -713,10 +873,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="attendance-options">
-                    <button class="btn-attendance" onclick="viewAttendance('biology')">View Attendance</button>
-                    <button class="btn-attendance" onclick="markAttendancePrompt()">Mark Attendance</button>
-                </div> -->
             </div>
         </div>
     </div>
