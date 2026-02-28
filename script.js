@@ -35,6 +35,14 @@ function loadDarkModePreference() {
     }
 }
 
+// Mobile card click - makes entire card clickable on mobile only
+function mobileCardClick(card) {
+    if (window.innerWidth <= 768) {
+        const btn = card.querySelector('.btn-action');
+        if (btn) btn.click();
+    }
+}
+
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
