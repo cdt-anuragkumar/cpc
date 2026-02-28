@@ -45,6 +45,8 @@ function toggleSidebar() {
     menuBtn.classList.toggle('active');
 }
 
+
+
 // Menu Management
 let hiddenMenus = JSON.parse(localStorage.getItem('hiddenMenus')) || [];
 
@@ -3772,9 +3774,19 @@ function showSection(sectionName) {
         link.classList.remove('active');
     });
     
-    const activeLink = document.querySelector(`[onclick="showSection('${sectionName}')"]`);
+    const activeLink = document.querySelector(`.nav-link[onclick="showSection('${sectionName}'); return false;"]`);
     if (activeLink) {
         activeLink.classList.add('active');
+    }
+
+    // Update sidebar nav active state
+    const sidebarNavItems = document.querySelectorAll('.sidebar-nav-item');
+    sidebarNavItems.forEach(item => {
+        item.classList.remove('active');
+    });
+    const activeSidebarLink = document.querySelector(`.sidebar-nav-item[onclick*="showSection('${sectionName}')"]`);
+    if (activeSidebarLink) {
+        activeSidebarLink.classList.add('active');
     }
 }
 

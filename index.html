@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta-name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CPCMS</title>
 
     <!-- Google Fonts -->
@@ -29,10 +29,12 @@
             </div>
         </div>
         <div class="header-right">
-            <a href="#" class="nav-link active" onclick="showSection('home'); return false;">Home</a>
-            <a href="#" class="nav-link" onclick="showSection('gallery'); return false;">Gallery</a>
-            <a href="#" class="nav-link" onclick="showSection('about'); return false;">About</a>
-            <a href="#" class="nav-link" onclick="openModal('contact'); return false;">Contact</a>
+            <div class="nav-links-desktop">
+                <a href="#" class="nav-link active" onclick="showSection('home'); return false;">Home</a>
+                <a href="#" class="nav-link" onclick="showSection('gallery'); return false;">Gallery</a>
+                <a href="#" class="nav-link" onclick="showSection('about'); return false;">About</a>
+                <a href="#" class="nav-link" onclick="openModal('contact'); return false;">Contact</a>
+            </div>
             
             <!-- Dark Mode Toggle Button -->
             <button class="theme-toggle-btn" id="themeToggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
@@ -62,10 +64,22 @@
                     <button onclick="toggleSidebar()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--dark); padding: 5px;">✕</button>
                 </div>
                 <nav class="nav-section">
-                    <!-- <a href="#" class="nav-item" onclick="toggleSubmenu('academics'); return false;">
-                        <span>Academics</span>
-                        <span class="arrow">›</span>
-                    </a> -->
+                    <a href="#" class="sidebar-nav-item active" onclick="showSection('home'); toggleSidebar(); return false;">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="#" class="sidebar-nav-item" onclick="showSection('gallery'); toggleSidebar(); return false;">
+                        <i class="fas fa-images"></i>
+                        <span>Gallery</span>
+                    </a>
+                    <a href="#" class="sidebar-nav-item" onclick="showSection('about'); toggleSidebar(); return false;">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About</span>
+                    </a>
+                    <a href="#" class="sidebar-nav-item" onclick="openModal('contact'); toggleSidebar(); return false;">
+                        <i class="fas fa-envelope"></i>
+                        <span>Contact</span>
+                    </a>
                 </nav>
             </div>
 
