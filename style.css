@@ -5277,11 +5277,21 @@ body.dark-mode .sidebar-nav-item.active {
     .middlebox-section {
         flex: unset;
         max-height: 280px;
+        animation: none !important;
+    }
+
+    .middlebox-section:hover {
+        transform: none;
     }
 
     .headlines-section {
         flex: unset;
         max-height: 230px;
+        animation: none !important;
+    }
+
+    .headlines-section:hover {
+        transform: none;
     }
 
     .about-header h2 {
@@ -5328,6 +5338,8 @@ body.dark-mode .sidebar-nav-item.active {
 
     .toppers-btn {
         grid-column: 1 / -1;
+        text-align: center;
+        justify-content: center;
     }
 
     /* Footer */
