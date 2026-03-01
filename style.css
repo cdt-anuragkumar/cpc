@@ -916,7 +916,38 @@ body.dark-mode .filter-btn { background: rgba(255,255,255,0.06); border-color: r
 
 .modal .modal-header h2 { margin: 0; font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 20px; }
 
-.modal .modal-header .close-btn { background: rgba(255,255,255,0.12); border: none; color: #fff; width: 38px; height: 38px; border-radius: 8px; font-size: 18px; cursor: pointer; }
+.modal .modal-header .close-btn { background: rgba(255,255,255,0.12); border: none; color: #fff; width: 38px; height: 38px; border-radius: 8px; font-size: 18px; cursor: pointer; transition: all 0.3s ease; }
+
+.modal .modal-header .close-btn:hover {
+    background: rgba(255,255,255,0.25);
+    transform: rotate(90deg) scale(1.1);
+}
+
+/* Founder modal specific header */
+#founderModal .modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 40%, #4facfe 100%);
+    background-size: 200% 100%;
+    animation: founderShimmer 6s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
+}
+
+#founderModal .modal-header::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+#founderModal .modal-content {
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(102, 126, 234, 0.3), 0 0 40px rgba(118, 75, 162, 0.1);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+}
 
 .modal .modal-body {
     padding: 18px 22px 26px 22px;
@@ -3583,14 +3614,20 @@ body.dark-mode .headline-item {
 /* Teacher section */
 .teacher-section {
     background: var(--bg-primary);
-    border-radius: 12px;
-    padding: 12px 20px;
+    border-radius: 0;
+    padding: 14px 30px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: nowrap;
     color: var(--text-primary);
     margin-top: 30px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-left: -30px;
+    margin-right: -30px;
+    margin-bottom: -30px;
+    width: calc(100% + 60px);
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
     animation: scaleIn 0.5s ease-out 0.6s backwards;
     transition: all 0.3s ease;
 }
@@ -3603,20 +3640,23 @@ body.dark-mode .teacher-section {
     font-size: 16px;
     font-weight: 700;
     color: var(--dark);
+    white-space: nowrap;
+    margin-right: 8px;
 }
 
 .btn-teacher {
-    padding: 8px 18px;
+    padding: 10px 24px;
     background: var(--primary);
     color: var(--bg-primary);
     border: none;
     border-radius: 8px;
     font-weight: 600;
-    font-size: 12px;
+    font-size: 13px;
     cursor: pointer;
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
 .btn-teacher:hover {
@@ -4732,49 +4772,171 @@ body.dark-mode .gallery-item {
 }
 
 /* Founder Modal */
+
+/* Shimmer animation for the profile card */
+@keyframes founderShimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+
+/* Gentle floating animation for the avatar */
+@keyframes founderFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+/* Rotating gradient border for avatar */
+@keyframes founderBorderRotate {
+    0% { border-color: #667eea; }
+    25% { border-color: #764ba2; }
+    50% { border-color: #f093fb; }
+    75% { border-color: #4facfe; }
+    100% { border-color: #667eea; }
+}
+
+/* Pulse glow for detail cards */
+@keyframes founderPulseGlow {
+    0%, 100% { box-shadow: 0 4px 15px rgba(102, 126, 234, 0.15); }
+    50% { box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3); }
+}
+
+/* Slide-up entrance for cards */
+@keyframes founderSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .founder-profile {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 25px;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
-    border-radius: 15px;
+    padding: 30px 25px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.06) 0%, rgba(118, 75, 162, 0.1) 50%, rgba(79, 172, 254, 0.06) 100%);
+    border-radius: 20px;
     margin-bottom: 20px;
     border: 2px solid rgba(102, 126, 234, 0.2);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.4s ease;
+}
+
+/* Animated shimmer overlay on profile card */
+.founder-profile::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: founderShimmer 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.founder-profile:hover {
+    border-color: rgba(102, 126, 234, 0.45);
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.18);
+}
+
+/* Override teacher-photo-container inside founder modal */
+.founder-profile .teacher-photo-container {
+    width: 130px;
+    height: 130px;
+    border: 4px solid #667eea;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.35), 0 0 40px rgba(118, 75, 162, 0.15), inset 0 0 15px rgba(102, 126, 234, 0.1);
+    animation: founderFloat 3.5s ease-in-out infinite, founderBorderRotate 6s linear infinite;
+    z-index: 1;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.founder-profile .teacher-photo-container:hover {
+    transform: scale(1.12) rotate(3deg);
+    box-shadow: 0 0 30px rgba(102, 126, 234, 0.5), 0 0 60px rgba(118, 75, 162, 0.25), inset 0 0 20px rgba(102, 126, 234, 0.15);
 }
 
 .founder-name-large {
-    font-size: 28px;
-    font-weight: 700;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-size: 30px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 40%, #f093fb 70%, #667eea 100%);
+    background-size: 300% 100%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin-bottom: 5px;
     text-align: center;
+    letter-spacing: 2px;
+    animation: founderShimmer 5s ease-in-out infinite;
+    z-index: 1;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.founder-name-large:hover {
+    letter-spacing: 4px;
+    filter: brightness(1.15);
 }
 
 .founder-name-large h6 {
-    font-size: 14px;
-    color: #667eea;
+    font-size: 13px;
+    color: transparent;
     margin-top: 12px;
-    font-weight: 600;
-    background: rgba(102, 126, 234, 0.15);
-    padding: 8px 16px;
-    border-radius: 20px;
-    display: block;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #4facfe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    padding: 9px 20px;
+    border-radius: 25px;
+    display: inline-block;
+    letter-spacing: 2px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.founder-name-large h6::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 25px;
+    padding: 2px;
+    background: linear-gradient(135deg, #667eea, #764ba2, #4facfe);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+}
+
+.founder-name-large h6:hover {
+    transform: scale(1.05);
 }
 
 .founder-title-large {
-    font-size: 16px;
+    font-size: 15px;
     color: var(--text-secondary);
     font-weight: 500;
     margin-bottom: 20px;
     text-align: center;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
-    padding: 12px 16px;
-    border-radius: 10px;
-    border-left: 4px solid #667eea;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.12) 50%, rgba(79, 172, 254, 0.1) 100%);
+    padding: 14px 18px;
+    border-radius: 12px;
+    border-left: 4px solid transparent;
+    border-image: linear-gradient(180deg, #667eea, #764ba2) 1;
+    position: relative;
+    z-index: 1;
+    line-height: 1.6;
+    transition: all 0.4s ease;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.founder-title-large:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.18) 0%, rgba(118, 75, 162, 0.18) 50%, rgba(79, 172, 254, 0.18) 100%);
+    transform: translateX(4px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.15);
 }
 
 .founder-details-grid {
@@ -4786,52 +4948,111 @@ body.dark-mode .gallery-item {
 }
 
 .founder-detail-card {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.12) 100%);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.1) 50%, rgba(79, 172, 254, 0.08) 100%);
     padding: 18px;
-    border-radius: 12px;
-    border-left: 5px solid #667eea;
+    border-radius: 14px;
+    border-left: 5px solid transparent;
+    border-image: linear-gradient(180deg, #667eea, #764ba2, #4facfe) 1;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     color: var(--text-primary);
-    border: 2px solid rgba(102, 126, 234, 0.25);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+    position: relative;
+    overflow: hidden;
+    animation: founderSlideUp 0.5s ease forwards, founderPulseGlow 3s ease-in-out infinite;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Stagger the card entrance animations */
+.founder-detail-card:nth-child(1) { animation-delay: 0s; }
+.founder-detail-card:nth-child(2) { animation-delay: 0.08s; }
+.founder-detail-card:nth-child(3) { animation-delay: 0.16s; }
+.founder-detail-card:nth-child(4) { animation-delay: 0.24s; }
+.founder-detail-card:nth-child(5) { animation-delay: 0.32s; }
+.founder-detail-card:nth-child(6) { animation-delay: 0.4s; }
+
+/* Gradient shine overlay on detail cards */
+.founder-detail-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%);
+    transition: left 0.6s ease;
+    pointer-events: none;
+}
+
+.founder-detail-card:hover::before {
+    left: 100%;
 }
 
 body.dark-mode .founder-detail-card {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.18) 0%, rgba(118, 75, 162, 0.18) 100%);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 50%, rgba(79, 172, 254, 0.12) 100%);
     border: 2px solid rgba(102, 126, 234, 0.35);
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
 }
 
 .founder-detail-card:hover {
-    transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
-    border: 2px solid rgba(102, 126, 234, 0.4);
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.18) 0%, rgba(118, 75, 162, 0.18) 100%);
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 12px 30px rgba(102, 126, 234, 0.3), 0 0 15px rgba(118, 75, 162, 0.15);
+    border: 2px solid rgba(102, 126, 234, 0.5);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.18) 0%, rgba(118, 75, 162, 0.2) 50%, rgba(79, 172, 254, 0.18) 100%);
+}
+
+body.dark-mode .founder-detail-card:hover {
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.35), 0 0 20px rgba(118, 75, 162, 0.2);
+    border: 2px solid rgba(102, 126, 234, 0.6);
 }
 
 .founder-detail-card label {
     font-size: 11px;
-    color: #667eea;
+    color: transparent;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
     display: block;
     margin-bottom: 8px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transition: all 0.3s ease;
+}
+
+.founder-detail-card:hover label {
+    letter-spacing: 2px;
 }
 
 .founder-detail-card .value {
     font-size: 15px;
     font-weight: 600;
     color: var(--dark);
+    transition: all 0.3s ease;
+}
+
+.founder-detail-card:hover .value {
+    color: #667eea;
 }
 
 .social-media-section {
     width: 100%;
     margin-top: 30px;
     padding: 20px;
-    border-top: 3px solid rgba(102, 126, 234, 0.3);
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+    border-top: 3px solid transparent;
+    border-image: linear-gradient(90deg, #667eea, #764ba2, #4facfe) 1;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.06) 0%, rgba(118, 75, 162, 0.1) 50%, rgba(79, 172, 254, 0.06) 100%);
     border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+}
+
+.social-media-section:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.15) 50%, rgba(79, 172, 254, 0.12) 100%);
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.12);
 }
 
 .social-media-section h3 {
@@ -4867,6 +5088,11 @@ body.dark-mode .founder-detail-card {
     border: 2px solid rgba(255, 255, 255, 0.3);
     position: relative;
     overflow: hidden;
+}
+
+.social-link:hover {
+    transform: translateY(-8px) scale(1.1) rotate(-3deg);
+    border-color: rgba(255, 255, 255, 0.6);
 }
 
 .social-link::before {
@@ -5321,12 +5547,18 @@ body.dark-mode .sidebar-nav-item.active {
         grid-template-columns: repeat(3, 1fr);
         gap: 6px;
         padding: 10px 12px;
+        margin-left: -12px;
+        margin-right: -12px;
+        margin-bottom: -12px;
+        width: calc(100% + 24px);
+        border-radius: 0;
     }
 
     .teacher-section h4 {
         grid-column: 1 / -1;
         margin-bottom: 4px;
         font-size: 14px;
+        margin-right: 0;
     }
 
     .btn-teacher {
@@ -5630,11 +5862,17 @@ body.dark-mode .sidebar-nav-item.active {
         grid-template-columns: repeat(3, 1fr);
         gap: 5px;
         padding: 8px;
+        margin-left: -12px;
+        margin-right: -12px;
+        margin-bottom: -12px;
+        width: calc(100% + 24px);
+        border-radius: 0;
     }
 
     .teacher-section h4 {
         grid-column: 1 / -1;
         font-size: 13px;
+        margin-right: 0;
     }
 
     .btn-teacher {
