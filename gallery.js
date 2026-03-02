@@ -1,14 +1,14 @@
 // ============ ENHANCED GALLERY SYSTEM ============
-// Handles: carousel view, grid view, filtering, lightbox, admin sync
+// Handles: grid view, filtering, lightbox, stats, admin sync
 
 const GALLERY_CATEGORIES = {
-    events: { label: 'Events', icon: 'fa-calendar-alt', iconClass: 'events' },
-    awards: { label: 'Awards', icon: 'fa-trophy', iconClass: 'awards' },
-    classes: { label: 'Classes', icon: 'fa-chalkboard-teacher', iconClass: 'classes' },
-    sports: { label: 'Sports', icon: 'fa-futbol', iconClass: 'sports' }
+    events: { label: 'Events', icon: 'fa-calendar-alt', iconClass: 'events', color: '#E94560' },
+    awards: { label: 'Awards', icon: 'fa-trophy', iconClass: 'awards', color: '#fda085' },
+    classes: { label: 'Classes', icon: 'fa-chalkboard-teacher', iconClass: 'classes', color: '#66a6ff' },
+    sports: { label: 'Sports', icon: 'fa-futbol', iconClass: 'sports', color: '#38f9d7' }
 };
 
-// Default gallery items (used when no admin data exists)
+// Default gallery items
 const DEFAULT_GALLERY = [
     { id: 1, title: 'Annual Function 2025', description: 'Celebrate achievements and performances from our students.', category: 'events', image: 'cpcimg.png' },
     { id: 2, title: 'Student Awards', description: 'Recognition of outstanding performers and achievers.', category: 'awards', image: 'cpcimg.png' },
@@ -30,7 +30,6 @@ function getGalleryItems() {
 
 document.addEventListener('DOMContentLoaded', function () {
     let currentFilter = 'all';
-    let currentView = 'carousel';
     let allFlatItems = [];
     let activeIndex = 0;
 
@@ -42,25 +41,47 @@ document.addEventListener('DOMContentLoaded', function () {
     const lbPrev = lightbox?.querySelector('.lightbox-prev');
     const lbNext = lightbox?.querySelector('.lightbox-next');
 
+    // ---- Stats Bar ----
+    function renderStatsBar(items) {
+        var bar = document.getElementById('galleryStatsBar');
+        if (!bar) return;
+        var total = items.length;
+        var catCounts = {};
+        items.forEach(function(item) {
+            var cat = item.category || 'other';
+            catCounts[cat] = (catCounts[cat] || 0) + 1;
+        });
+        var html = '<div class="gal-stat-chip" style="animation-delay:0s"><i class="fas fa-images"></i> Total: <span class="gal-stat-num">' + total + '</span></div>';
+        var delay = 0.08;
+        Object.keys(GALLERY_CATEGORIES).forEach(function(cat) {
+            if (catCounts[cat]) {
+                var catInfo = GALLERY_CATEGORIES[cat];
+                html += '<div class="gal-stat-chip" style="animation-delay:' + delay + 's"><i class="fas ' + catInfo.icon + '"></i> ' + catInfo.label + ': <span class="gal-stat-num">' + catCounts[cat] + '</span></div>';
+                delay += 0.08;
+            }
+        });
+        bar.innerHTML = html;
+    }
+
     // ---- Build Gallery Card HTML ----
-    function buildCard(item) {
-        const cat = GALLERY_CATEGORIES[item.category] || { label: item.category, icon: 'fa-image' };
-        return `
-        <figure class="gallery-item" data-category="${item.category}" data-id="${item.id}">
-            <div class="gallery-image">
-                <img src="${item.image}" alt="${escapeAttr(item.title)}" loading="lazy">
-                <span class="gallery-category-badge">${cat.label}</span>
-                <div class="gallery-overlay"><div class="view-icon"><i class="fas fa-expand"></i></div></div>
-            </div>
-            <figcaption class="gallery-info">
-                <h3>${escapeHtmlGallery(item.title)}</h3>
-                <p>${escapeHtmlGallery(item.description || '')}</p>
-            </figcaption>
-        </figure>`;
+    function buildCard(item, idx) {
+        var cat = GALLERY_CATEGORIES[item.category] || { label: item.category, icon: 'fa-image' };
+        var delay = (idx || 0) * 0.06;
+        return '<figure class="gallery-item" data-category="' + item.category + '" data-id="' + item.id + '" style="animation-delay:' + delay + 's">' +
+            '<div class="gallery-image">' +
+                '<img src="' + item.image + '" alt="' + escapeAttr(item.title) + '" loading="lazy">' +
+                '<span class="gallery-category-badge">' + cat.label + '</span>' +
+                '<div class="gallery-overlay"><div class="view-icon"><i class="fas fa-expand"></i></div></div>' +
+            '</div>' +
+            '<figcaption class="gallery-info">' +
+                '<h3>' + escapeHtmlGallery(item.title) + '</h3>' +
+                '<p>' + escapeHtmlGallery(item.description || '') + '</p>' +
+            '</figcaption>' +
+        '</figure>';
     }
 
     function escapeHtmlGallery(str) {
-        const div = document.createElement('div');
+        var div = document.createElement('div');
         div.textContent = str;
         return div.innerHTML;
     }
@@ -69,99 +90,66 @@ document.addEventListener('DOMContentLoaded', function () {
         return str.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    // ---- Render Carousel View (event-wise) ----
-    function renderCarouselView(items) {
-        const container = document.getElementById('galleryCarouselView');
-        if (!container) return;
-
-        // Group by category
-        const groups = {};
-        items.forEach(item => {
-            const cat = item.category || 'other';
-            if (!groups[cat]) groups[cat] = [];
-            groups[cat].push(item);
-        });
-
-        let html = '';
-        const catOrder = ['events', 'awards', 'classes', 'sports'];
-        const orderedKeys = catOrder.filter(k => groups[k]);
-        // Add any remaining categories
-        Object.keys(groups).forEach(k => { if (!orderedKeys.includes(k)) orderedKeys.push(k); });
-
-        orderedKeys.forEach(cat => {
-            const catInfo = GALLERY_CATEGORIES[cat] || { label: cat, icon: 'fa-image', iconClass: 'events' };
-            const catItems = groups[cat];
-            html += `
-            <div class="gallery-event-section" data-event-cat="${cat}">
-                <div class="gallery-event-header">
-                    <div class="gallery-event-title">
-                        <span class="event-icon ${catInfo.iconClass}"><i class="fas ${catInfo.icon}"></i></span>
-                        ${catInfo.label}
-                    </div>
-                    <span class="gallery-event-count">${catItems.length} photo${catItems.length > 1 ? 's' : ''}</span>
-                </div>
-                <div class="carousel-wrapper">
-                    <button class="carousel-nav prev" onclick="scrollCarousel(this, -1)"><i class="fas fa-chevron-left"></i></button>
-                    <div class="carousel-track">
-                        ${catItems.map(item => buildCard(item)).join('')}
-                    </div>
-                    <button class="carousel-nav next" onclick="scrollCarousel(this, 1)"><i class="fas fa-chevron-right"></i></button>
-                </div>
-            </div>`;
-        });
-
-        container.innerHTML = html;
-    }
-
     // ---- Render Grid View ----
     function renderGridView(items) {
-        const grid = document.getElementById('galleryGrid');
+        var grid = document.getElementById('galleryGrid');
         if (!grid) return;
-        grid.innerHTML = items.map(item => buildCard(item)).join('');
+        grid.innerHTML = items.map(function(item, i) { return buildCard(item, i); }).join('');
     }
 
     // ---- Main render ----
     function renderGallery() {
-        const items = getGalleryItems();
-        const filtered = currentFilter === 'all' ? items : items.filter(i => i.category === currentFilter);
+        var items = getGalleryItems();
+        var filtered = currentFilter === 'all' ? items : items.filter(function(i) { return i.category === currentFilter; });
 
-        const carouselView = document.getElementById('galleryCarouselView');
-        const gridView = document.getElementById('galleryGridView');
-        const emptyState = document.getElementById('galleryEmpty');
+        var gridView = document.getElementById('galleryGridView');
+        var emptyState = document.getElementById('galleryEmpty');
+
+        renderStatsBar(items);
 
         if (filtered.length === 0) {
-            if (carouselView) carouselView.style.display = 'none';
             if (gridView) gridView.style.display = 'none';
             if (emptyState) emptyState.style.display = '';
             return;
         }
         if (emptyState) emptyState.style.display = 'none';
 
-        if (currentView === 'carousel') {
-            renderCarouselView(filtered);
-            if (carouselView) carouselView.style.display = '';
-            if (gridView) gridView.style.display = 'none';
-        } else {
-            renderGridView(filtered);
-            if (carouselView) carouselView.style.display = 'none';
-            if (gridView) gridView.style.display = '';
-        }
+        renderGridView(filtered);
+        if (gridView) gridView.style.display = '';
 
         attachCardListeners();
+        observeCards();
     }
 
     // ---- Card click handlers ----
     function attachCardListeners() {
-        const allCards = document.querySelectorAll('.gallery-item');
+        var allCards = document.querySelectorAll('.gallery-item');
         allFlatItems = Array.from(allCards);
-        allCards.forEach(card => {
+        allCards.forEach(function(card) {
             card.addEventListener('click', function() {
                 allFlatItems = Array.from(document.querySelectorAll('.gallery-item'));
                 activeIndex = allFlatItems.indexOf(card);
-                const img = card.querySelector('img');
-                const title = card.querySelector('.gallery-info h3')?.innerText || '';
+                var img = card.querySelector('img');
+                var title = card.querySelector('.gallery-info h3')?.innerText || '';
                 openLightbox(img.src, title);
             });
+        });
+    }
+
+    // ---- Intersection Observer for reveal animations ----
+    function observeCards() {
+        if (!('IntersectionObserver' in window)) return;
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('gal-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
+
+        document.querySelectorAll('.gallery-item, .gallery-event-section').forEach(function(el) {
+            observer.observe(el);
         });
     }
 
@@ -171,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function () {
         lbImg.src = src;
         lbImg.alt = caption;
         if (lbCaption) lbCaption.textContent = caption;
-        if (lbCounter) lbCounter.textContent = `${activeIndex + 1} / ${allFlatItems.length}`;
+        if (lbCounter) lbCounter.textContent = (activeIndex + 1) + ' / ' + allFlatItems.length;
         lightbox.classList.add('active');
         lightbox.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
@@ -187,50 +175,62 @@ document.addEventListener('DOMContentLoaded', function () {
     function navigate(dir) {
         if (!allFlatItems.length) return;
         activeIndex = (activeIndex + dir + allFlatItems.length) % allFlatItems.length;
-        const target = allFlatItems[activeIndex];
-        const img = target.querySelector('img');
-        const caption = target.querySelector('.gallery-info h3')?.innerText || '';
+        var target = allFlatItems[activeIndex];
+        var img = target.querySelector('img');
+        var caption = target.querySelector('.gallery-info h3')?.innerText || '';
         openLightbox(img.src, caption);
     }
 
+    // Lightbox touch swipe
+    var lbTouchStartX = 0;
+    if (lightbox) {
+        lightbox.addEventListener('touchstart', function(e) {
+            lbTouchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        lightbox.addEventListener('touchend', function(e) {
+            var diff = e.changedTouches[0].screenX - lbTouchStartX;
+            if (Math.abs(diff) > 50) {
+                navigate(diff > 0 ? -1 : 1);
+            }
+        });
+    }
+
     lbClose?.addEventListener('click', closeLightbox);
-    lbPrev?.addEventListener('click', (e) => { e.stopPropagation(); navigate(-1); });
-    lbNext?.addEventListener('click', (e) => { e.stopPropagation(); navigate(1); });
-    lightbox?.addEventListener('click', (e) => {
+    lbPrev?.addEventListener('click', function(e) { e.stopPropagation(); navigate(-1); });
+    lbNext?.addEventListener('click', function(e) { e.stopPropagation(); navigate(1); });
+    lightbox?.addEventListener('click', function(e) {
         if (e.target.classList.contains('lightbox-backdrop')) closeLightbox();
     });
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', function(e) {
         if (!lightbox || !lightbox.classList.contains('active')) return;
         if (e.key === 'Escape') closeLightbox();
         if (e.key === 'ArrowLeft') navigate(-1);
         if (e.key === 'ArrowRight') navigate(1);
     });
 
-    // ---- Filter buttons ----
-    const filters = document.querySelectorAll('.filter-btn');
-    filters.forEach(btn => btn.addEventListener('click', () => {
-        filters.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentFilter = btn.dataset.filter;
-        renderGallery();
-    }));
+    // ---- Filter buttons with transition ----
+    var filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            filterBtns.forEach(function(b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            currentFilter = btn.dataset.filter;
 
-    // ---- View toggle ----
-    const viewBtns = document.querySelectorAll('.view-btn');
-    viewBtns.forEach(btn => btn.addEventListener('click', () => {
-        viewBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentView = btn.dataset.view;
-        renderGallery();
-    }));
-
-    // ---- Carousel scroll function ----
-    window.scrollCarousel = function(btnEl, direction) {
-        const wrapper = btnEl.closest('.carousel-wrapper');
-        const track = wrapper.querySelector('.carousel-track');
-        const scrollAmount = 260;
-        track.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
-    };
+            var gridView = document.getElementById('galleryGridView');
+            if (gridView) {
+                gridView.style.opacity = '0';
+                gridView.style.transform = 'translateY(10px)';
+                gridView.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+            }
+            setTimeout(function() {
+                renderGallery();
+                if (gridView) {
+                    gridView.style.opacity = '';
+                    gridView.style.transform = '';
+                }
+            }, 200);
+        });
+    });
 
     // ---- Listen for admin gallery changes ----
     window.addEventListener('storage', function(e) {

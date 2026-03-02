@@ -30,22 +30,23 @@
         </div>
         <div class="header-right">
             <div class="nav-links-desktop">
-                <a href="#" class="nav-link active" onclick="showSection('home'); return false;">Home</a>
-                <a href="#" class="nav-link" onclick="showSection('gallery'); return false;">Gallery</a>
-                <a href="#" class="nav-link" onclick="showSection('about'); return false;">About</a>
-                <a href="#" class="nav-link" onclick="openModal('contact'); return false;">Contact</a>
+                <a href="#" class="nav-link active" onclick="showSection('home'); return false;" title="Home"><i class="fas fa-home"></i></a>
+                <a href="#" class="nav-link" onclick="openModal('contact'); return false;" title="Contact"><i class="fas fa-phone-alt"></i></a>
+                <button class="nav-link theme-toggle-btn" id="themeToggle" onclick="toggleDarkMode()" title="Toggle Dark Mode"><i class="fas fa-eye"></i></button>
             </div>
             
-            <!-- Dark Mode Toggle Button -->
-            <button class="theme-toggle-btn" id="themeToggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
-                <i class="fas fa-moon"></i>
-            </button>
-            
-            <div class="user-profile" onclick="openModal('founder')">
+            <div class="user-profile founder-card" onclick="openModal('founder')">
                 <div class="user-avatar">CPC</div>
                 <div class="user-info">
                     <h4>FOUNDER</h4>
                     <p>Abhishek Raj</p>
+                </div>
+            </div>
+
+            <div class="user-profile toppers-nav-card" onclick="openToppersModal()">
+                <div class="user-avatar toppers-avatar">🏆</div>
+                <div class="user-info">
+                    <h4>TOPPERS</h4>
                 </div>
             </div>
         </div>
@@ -59,28 +60,42 @@
             
             <!-- Sidebar -->
             <div class="sidebar" id="sidebar">
-                <div style="padding: 0 30px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #E8E8E8; margin-bottom: 20px;">
-                    <h3 style="font-size: 18px; font-weight: 700; color: var(--dark);">Menu</h3>
-                    <button onclick="toggleSidebar()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--dark); padding: 5px;">✕</button>
+                <div class="sidebar-header">
+                    <div class="sidebar-brand">
+                        <div class="sidebar-brand-icon">☰</div>
+                        <span class="sidebar-brand-text">Menu</span>
+                    </div>
+                    <button class="sidebar-close" onclick="toggleSidebar()">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
+                <div class="sidebar-divider"></div>
                 <nav class="nav-section">
                     <a href="#" class="sidebar-nav-item active" onclick="showSection('home'); toggleSidebar(); return false;">
-                        <i class="fas fa-home"></i>
+                        <div class="sidebar-icon-wrap"><i class="fas fa-home"></i></div>
                         <span>Home</span>
+                        <div class="sidebar-item-arrow"><i class="fas fa-chevron-right"></i></div>
                     </a>
                     <a href="#" class="sidebar-nav-item" onclick="showSection('gallery'); toggleSidebar(); return false;">
-                        <i class="fas fa-images"></i>
+                        <div class="sidebar-icon-wrap"><i class="fas fa-images"></i></div>
                         <span>Gallery</span>
+                        <div class="sidebar-item-arrow"><i class="fas fa-chevron-right"></i></div>
                     </a>
                     <a href="#" class="sidebar-nav-item" onclick="showSection('about'); toggleSidebar(); return false;">
-                        <i class="fas fa-info-circle"></i>
+                        <div class="sidebar-icon-wrap"><i class="fas fa-info-circle"></i></div>
                         <span>About</span>
+                        <div class="sidebar-item-arrow"><i class="fas fa-chevron-right"></i></div>
                     </a>
                     <a href="#" class="sidebar-nav-item" onclick="openModal('contact'); toggleSidebar(); return false;">
-                        <i class="fas fa-envelope"></i>
+                        <div class="sidebar-icon-wrap"><i class="fas fa-envelope"></i></div>
                         <span>Contact</span>
+                        <div class="sidebar-item-arrow"><i class="fas fa-chevron-right"></i></div>
                     </a>
                 </nav>
+                <div class="sidebar-divider"></div>
+                <div class="sidebar-footer">
+                    <span>© CPC 2026</span>
+                </div>
             </div>
 
             <!-- Content Area -->
@@ -225,7 +240,6 @@
                     <button class="btn-teacher" onclick="openTeacherModal('mathematics')">Mathematics</button>
                     <button class="btn-teacher" onclick="openTeacherModal('english')">English</button>
                     <button class="btn-teacher" onclick="openTeacherModal('social')">Social Studies</button>
-                    <button class="btn-teacher toppers-btn" onclick="openToppersModal()">🏆 Toppers</button>
                 </div>
                 </div>
 
@@ -233,8 +247,10 @@
                 <div id="gallery" class="section">
                     <div class="gallery-container">
                         <div class="gallery-header">
-                            <h1 class="gallery-page-title"><i class="fas fa-images"></i> GALLERY</h1>
+                            <div class="gallery-header-icon"><i class="fas fa-images"></i></div>
+                            <h1 class="gallery-page-title">GALLERY</h1>
                             <p class="gallery-page-subtitle">Moments, achievements, and behind-the-scenes from CPC.</p>
+                            <div class="gallery-header-line"></div>
                         </div>
 
                         <div class="gallery-controls">
@@ -245,19 +261,13 @@
                                 <button class="filter-btn" data-filter="classes"><i class="fas fa-chalkboard-teacher"></i> Classes</button>
                                 <button class="filter-btn" data-filter="sports"><i class="fas fa-futbol"></i> Sports</button>
                             </div>
-                            <div class="gallery-view-toggle">
-                                <button class="view-btn active" data-view="carousel" title="Carousel View"><i class="fas fa-layer-group"></i></button>
-                                <button class="view-btn" data-view="grid" title="Grid View"><i class="fas fa-th"></i></button>
-                            </div>
                         </div>
 
-                        <!-- Carousel View (event-wise) -->
-                        <div id="galleryCarouselView" class="gallery-carousel-view">
-                            <!-- Dynamically populated event-wise carousels -->
-                        </div>
+                        <!-- Stats Bar -->
+                        <div class="gallery-stats-bar" id="galleryStatsBar"></div>
 
                         <!-- Grid View -->
-                        <div id="galleryGridView" class="gallery-grid-view" style="display:none;">
+                        <div id="galleryGridView" class="gallery-grid-view">
                             <div class="gallery-grid" id="galleryGrid">
                                 <!-- Dynamically populated -->
                             </div>
@@ -265,7 +275,7 @@
 
                         <!-- Empty State -->
                         <div id="galleryEmpty" class="gallery-empty" style="display:none;">
-                            <i class="fas fa-camera-retro"></i>
+                            <div class="gallery-empty-icon"><i class="fas fa-camera-retro"></i></div>
                             <h3>No photos yet</h3>
                             <p>Gallery images will appear here once added by the admin.</p>
                         </div>
@@ -277,8 +287,10 @@
                             <button class="lightbox-prev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
                             <div class="lightbox-content">
                                 <img src="" alt="">
-                                <div class="lightbox-caption"></div>
-                                <div class="lightbox-counter"></div>
+                                <div class="lightbox-info-bar">
+                                    <div class="lightbox-caption"></div>
+                                    <div class="lightbox-counter"></div>
+                                </div>
                             </div>
                             <button class="lightbox-next" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
                         </div>
@@ -392,8 +404,7 @@
                 <div id="attendance" class="section">
                     <!-- MAIN MENU SCREEN -->
                     <div id="attendanceMainMenu" class="attendance-menu-screen">
-                        <div class="attendance-menu-card">
-                            <div class="attendance-menu-icon">�</div>
+                        <div class="attendance-menu-card">                            <button class="attendance-close-btn" onclick="showSection('home')">&times;</button>                            <div class="attendance-menu-icon">�</div>
                             <h1>Attendance Manager</h1>
                             <p>Select an option below to manage school attendance</p>
                             
@@ -561,12 +572,12 @@
 
     <!-- Timetable Viewer Modal -->
     <div id="timetableModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
+        <div class="modal-content large-modal">
+            <div class="modal-header tt-modal-header">
                 <h2>📅 Time Table</h2>
                 <button class="close-btn" onclick="closeTimetableModal()">&times;</button>
             </div>
-            <div class="modal-body" id="timetableModalBody" style="padding: 20px;">
+            <div class="modal-body" id="timetableModalBody" style="padding: 24px;">
                 <!-- Timetable content injected here -->
             </div>
         </div>
@@ -575,12 +586,12 @@
     <!-- Contact Modal -->
     <!-- Student Details Modal -->
     <div id="studentModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
+        <div class="modal-content sm-modal-content">
+            <div class="modal-header sm-modal-header">
                 <h2>Student Details</h2>
                 <button class="close-btn" onclick="closeModal('student')">&times;</button>
             </div>
-            <div class="modal-body" id="studentModalBody" style="padding: 15px;">
+            <div class="modal-body" id="studentModalBody" style="padding: 0;">
                 <!-- Student details injected here -->
             </div>
         </div>
@@ -588,23 +599,28 @@
     <!-- Admin Authentication Modal -->
     <div id="adminAuthModal" class="modal">
         <div class="admin-login-card">
-            <button class="admin-login-close" onclick="closeAdminAuth()">&times;</button>
+            <!-- Decorative orbs -->
+            <div class="adm-orb adm-orb-1"></div>
+            <div class="adm-orb adm-orb-2"></div>
+            <div class="adm-orb adm-orb-3"></div>
+            <button class="admin-login-close" onclick="closeAdminAuth()"><i class="fas fa-times"></i></button>
             <div class="admin-login-icon-wrap">
-                <div class="admin-login-icon">🛡️</div>
+                <div class="admin-login-icon"><i class="fas fa-shield-alt"></i></div>
             </div>
             <h2 class="admin-login-title">Admin Access</h2>
             <p class="admin-login-subtitle">Enter your password to unlock the dashboard</p>
+            <div class="adm-security-badge"><i class="fas fa-lock"></i> Secured Connection</div>
             <form id="adminAuthForm" onsubmit="verifyAdminPassword(event)">
                 <div class="admin-login-field">
-                    <label for="adminPassword">Password</label>
+                    <label for="adminPassword"><i class="fas fa-key"></i> Password</label>
                     <div class="admin-login-input-wrap">
-                        <span class="admin-login-input-icon">🔑</span>
+                        <span class="admin-login-input-icon"><i class="fas fa-fingerprint"></i></span>
                         <input type="password" id="adminPassword" placeholder="Enter admin password" required autocomplete="current-password">
-                        <button type="button" class="admin-login-toggle" onclick="toggleAdminPassword()">👁️</button>
+                        <button type="button" class="admin-login-toggle" onclick="toggleAdminPassword()"><i class="fas fa-eye"></i></button>
                     </div>
                 </div>
-                <p id="adminAuthError" class="admin-login-error">❌ Incorrect password. Try again.</p>
-                <button type="submit" class="admin-login-btn primary">🔓 Unlock Dashboard</button>
+                <p id="adminAuthError" class="admin-login-error"><i class="fas fa-exclamation-circle"></i> Incorrect password. Try again.</p>
+                <button type="submit" class="admin-login-btn primary"><i class="fas fa-unlock-alt"></i> Unlock Dashboard</button>
                 <button type="button" class="admin-login-btn secondary" onclick="closeAdminAuth()">Cancel</button>
             </form>
         </div>
@@ -612,73 +628,162 @@
 
     <!-- Admin Dashboard Modal -->
     <div id="adminDashboardModal" class="modal">
-        <div class="modal-content large-modal">
-            <div class="modal-header">
-                <h2>Admin Dashboard</h2>
-                <div style="display:flex; gap:8px; align-items:center;">
-                    <button class="btn-action" onclick="adminLogout()" style="background:transparent; color: #fff; border:1px solid rgba(255,255,255,0.18); padding:6px 10px; font-weight:600;">Logout</button>
+        <div class="modal-content large-modal adm-dash-shell">
+            <div class="modal-header admin-dash-header">
+                <div class="admin-header-left">
+                    <div class="admin-header-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div>
+                        <h2>Admin Dashboard</h2>
+                        <p class="admin-header-sub" id="adminGreeting">Welcome back, Admin</p>
+                    </div>
+                </div>
+                <div class="admin-header-actions">
+                    <button class="adm-quick-btn" onclick="adminExportAllData()" title="Export Backup"><i class="fas fa-download"></i></button>
+                    <button class="adm-quick-btn" onclick="refreshAdminDashboard()" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                    <button class="admin-logout-btn" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
                     <button class="close-btn" onclick="closeAdminDashboard()">&times;</button>
                 </div>
             </div>
-            <div class="modal-body">
+            <div class="modal-body admin-dash-body">
                 <!-- Admin Stats Bar -->
                 <div class="admin-stats-bar" id="adminStatsBar"></div>
 
-                <div class="admin-sections" style="display:flex;flex-wrap:wrap;gap:18px; justify-content:center;">
-                    <div class="admin-tile" onclick="openSectionEditor('students')">
-                        <div class="tile-icon">👥</div>
-                        <div class="tile-title">Students</div>
-                        <div class="tile-desc">Manage student list & rolls</div>
+                <!-- Search + Last login compact row -->
+                <div class="admin-toolbar-row">
+                    <div class="admin-search-wrap">
+                        <i class="fas fa-search admin-search-icon"></i>
+                        <input type="text" id="adminTileSearch" placeholder="Search modules..." oninput="filterAdminTiles(this.value)" autocomplete="off">
                     </div>
-                    <div class="admin-tile" onclick="openSectionEditor('timetable')">
-                        <div class="tile-icon">🗓️</div>
-                        <div class="tile-title">Time Table</div>
-                        <div class="tile-desc">Edit class schedules</div>
+                    <div class="admin-toolbar-divider"></div>
+                    <div class="admin-last-login" id="adminLastLogin"></div>
+                </div>
+
+                <div class="admin-sections" id="adminTilesGrid">
+                    <div class="admin-tile" data-section="students" onclick="openSectionEditor('students')">
+                        <div class="tile-accent" style="--tile-color: #667eea;"></div>
+                        <div class="tile-icon-wrap" style="--tile-color: #667eea;"><i class="fas fa-users"></i></div>
+                        <div class="tile-body">
+                            <div class="tile-title">Students</div>
+                            <div class="tile-desc">Manage student list & rolls</div>
+                        </div>
+                        <span class="tile-badge" id="badge-students"></span>
+                        <div class="tile-arrow"><i class="fas fa-chevron-right"></i></div>
                     </div>
-                    <div class="admin-tile" onclick="openSectionEditor('materials')">
-                        <div class="tile-icon">📚</div>
-                        <div class="tile-title">Materials</div>
-                        <div class="tile-desc">Upload study resources</div>
+                    <div class="admin-tile" data-section="timetable" onclick="openSectionEditor('timetable')">
+                        <div class="tile-accent" style="--tile-color: #4facfe;"></div>
+                        <div class="tile-icon-wrap" style="--tile-color: #4facfe;"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="tile-body">
+                            <div class="tile-title">Time Table</div>
+                            <div class="tile-desc">Edit class schedules</div>
+                        </div>
+                        <span class="tile-badge" id="badge-timetable"></span>
+                        <div class="tile-arrow"><i class="fas fa-chevron-right"></i></div>
                     </div>
-                    <div class="admin-tile" onclick="openSectionEditor('results')">
-                        <div class="tile-icon">📊</div>
-                        <div class="tile-title">Results</div>
-                        <div class="tile-desc">Post exam results</div>
+                    <div class="admin-tile" data-section="materials" onclick="openSectionEditor('materials')">
+                        <div class="tile-accent" style="--tile-color: #43e97b;"></div>
+                        <div class="tile-icon-wrap" style="--tile-color: #43e97b;"><i class="fas fa-book-open"></i></div>
+                        <div class="tile-body">
+                            <div class="tile-title">Materials</div>
+                            <div class="tile-desc">Upload study resources</div>
+                        </div>
+                        <span class="tile-badge" id="badge-materials"></span>
+                        <div class="tile-arrow"><i class="fas fa-chevron-right"></i></div>
                     </div>
-                    <div class="admin-tile" onclick="openSectionEditor('attendance')">
-                        <div class="tile-icon">✅</div>
-                        <div class="tile-title">Attendance</div>
-                        <div class="tile-desc">Mark & view attendance</div>
+                    <div class="admin-tile" data-section="results" onclick="openSectionEditor('results')">
+                        <div class="tile-accent" style="--tile-color: #fa709a;"></div>
+                        <div class="tile-icon-wrap" style="--tile-color: #fa709a;"><i class="fas fa-chart-bar"></i></div>
+                        <div class="tile-body">
+                            <div class="tile-title">Results</div>
+                            <div class="tile-desc">Post exam results</div>
+                        </div>
+                        <span class="tile-badge" id="badge-results"></span>
+                        <div class="tile-arrow"><i class="fas fa-chevron-right"></i></div>
                     </div>
-                    <div class="admin-tile" onclick="openSectionEditor('teachers')">
-                        <div class="tile-icon">👨‍🏫</div>
-                        <div class="tile-title">Teachers</div>
-                        <div class="tile-desc">Manage faculty profiles</div>
+                    <div class="admin-tile" data-section="attendance" onclick="openSectionEditor('attendance')">
+                        <div class="tile-accent" style="--tile-color: #00c9a7;"></div>
+                        <div class="tile-icon-wrap" style="--tile-color: #00c9a7;"><i class="fas fa-clipboard-check"></i></div>
+                        <div class="tile-body">
+                            <div class="tile-title">Attendance</div>
+                            <div class="tile-desc">Mark & view attendance</div>
+                        </div>
+                        <span class="tile-badge" id="badge-attendance"></span>
+                        <div class="tile-arrow"><i class="fas fa-chevron-right"></i></div>
                     </div>
-                    <div class="admin-tile" onclick="openSectionEditor('gallery')">
-                        <div class="tile-icon">🖼️</div>
-                        <div class="tile-title">Gallery</div>
-                        <div class="tile-desc">Manage gallery images</div>
+                    <div class="admin-tile" data-section="teachers" onclick="openSectionEditor('teachers')">
+                        <div class="tile-accent" style="--tile-color: #f5576c;"></div>
+                        <div class="tile-icon-wrap" style="--tile-color: #f5576c;"><i class="fas fa-chalkboard-teacher"></i></div>
+                        <div class="tile-body">
+                            <div class="tile-title">Teachers</div>
+                            <div class="tile-desc">Manage faculty profiles</div>
+                        </div>
+                        <span class="tile-badge" id="badge-teachers"></span>
+                        <div class="tile-arrow"><i class="fas fa-chevron-right"></i></div>
                     </div>
-                    <div class="admin-tile" onclick="openSectionEditor('toppers')">
-                        <div class="tile-icon">🏆</div>
-                        <div class="tile-title">Toppers</div>
-                        <div class="tile-desc">Manage board toppers</div>
+                    <div class="admin-tile" data-section="gallery" onclick="openSectionEditor('gallery')">
+                        <div class="tile-accent" style="--tile-color: #a18cd1;"></div>
+                        <div class="tile-icon-wrap" style="--tile-color: #a18cd1;"><i class="fas fa-images"></i></div>
+                        <div class="tile-body">
+                            <div class="tile-title">Gallery</div>
+                            <div class="tile-desc">Manage gallery images</div>
+                        </div>
+                        <span class="tile-badge" id="badge-gallery"></span>
+                        <div class="tile-arrow"><i class="fas fa-chevron-right"></i></div>
                     </div>
-                    <div class="admin-tile" onclick="openSectionEditor('headlines')">
-                        <div class="tile-icon">📰</div>
-                        <div class="tile-title">Headlines</div>
-                        <div class="tile-desc">Edit news & notices</div>
+                    <div class="admin-tile" data-section="toppers" onclick="openSectionEditor('toppers')">
+                        <div class="tile-accent" style="--tile-color: #fbc2eb;"></div>
+                        <div class="tile-icon-wrap" style="--tile-color: #fbc2eb;"><i class="fas fa-trophy"></i></div>
+                        <div class="tile-body">
+                            <div class="tile-title">Toppers</div>
+                            <div class="tile-desc">Manage board toppers</div>
+                        </div>
+                        <span class="tile-badge" id="badge-toppers"></span>
+                        <div class="tile-arrow"><i class="fas fa-chevron-right"></i></div>
                     </div>
-                    <div class="admin-tile" onclick="openSectionEditor('contacts')">
-                        <div class="tile-icon">📩</div>
-                        <div class="tile-title">Messages</div>
-                        <div class="tile-desc">View contact messages</div>
+                    <div class="admin-tile" data-section="headlines" onclick="openSectionEditor('headlines')">
+                        <div class="tile-accent" style="--tile-color: #ff9a9e;"></div>
+                        <div class="tile-icon-wrap" style="--tile-color: #ff9a9e;"><i class="fas fa-newspaper"></i></div>
+                        <div class="tile-body">
+                            <div class="tile-title">Headlines</div>
+                            <div class="tile-desc">Edit news & notices</div>
+                        </div>
+                        <span class="tile-badge" id="badge-headlines"></span>
+                        <div class="tile-arrow"><i class="fas fa-chevron-right"></i></div>
                     </div>
-                    <div class="admin-tile" onclick="openSectionEditor('admin')">
-                        <div class="tile-icon">⚙️</div>
-                        <div class="tile-title">Settings</div>
-                        <div class="tile-desc">Site configuration</div>
+                    <div class="admin-tile" data-section="contacts" onclick="openSectionEditor('contacts')">
+                        <div class="tile-accent" style="--tile-color: #fad0c4;"></div>
+                        <div class="tile-icon-wrap" style="--tile-color: #fad0c4;"><i class="fas fa-envelope-open-text"></i></div>
+                        <div class="tile-body">
+                            <div class="tile-title">Messages</div>
+                            <div class="tile-desc">View contact messages</div>
+                        </div>
+                        <span class="tile-badge" id="badge-contacts"></span>
+                        <div class="tile-arrow"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+                    <div class="admin-tile" data-section="admin" onclick="openSectionEditor('admin')">
+                        <div class="tile-accent" style="--tile-color: #764ba2;"></div>
+                        <div class="tile-icon-wrap" style="--tile-color: #764ba2;"><i class="fas fa-cogs"></i></div>
+                        <div class="tile-body">
+                            <div class="tile-title">Settings</div>
+                            <div class="tile-desc">Site configuration</div>
+                        </div>
+                        <div class="tile-arrow"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+                </div>
+
+                <!-- No results message -->
+                <div class="admin-no-results" id="adminNoResults" style="display:none;">
+                    <i class="fas fa-search"></i>
+                    <p>No modules found</p>
+                </div>
+
+                <!-- Activity Log -->
+                <div class="adm-activity-section" id="admActivitySection">
+                    <div class="adm-activity-header">
+                        <h4><i class="fas fa-history"></i> Recent Activity</h4>
+                        <button class="adm-activity-clear" onclick="clearAdminActivity()">Clear</button>
+                    </div>
+                    <div class="adm-activity-list" id="admActivityList">
+                        <div class="adm-activity-empty">No recent activity</div>
                     </div>
                 </div>
             </div>
@@ -778,70 +883,60 @@
 
     <!-- Founder Modal -->
     <div id="founderModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>👨‍💼 Founder Profile</h2>
+        <div class="modal-content founder-modal-content">
+            <div class="modal-header founder-modal-header">
+                <h2>Founder Profile</h2>
                 <button class="close-btn" onclick="closeModal('founder')">&times;</button>
             </div>
-            <div class="modal-body">
-                <div class="founder-profile">
-                    <div class="teacher-photo-container" onclick="document.getElementById('social-teacher1-upload').click()">
-                            <img id="social-teacher1-img" class="teacher-photo" style="display: none;" src="" alt="Teacher Photo">
-                            <img src="founderr.png">    
-                        </div>
-                    <div class="founder-name-large">ABHISHEK RAJ
-                        <h6>FOUNDER & DIRECTOR</h6>
+            <div class="modal-body founder-modal-body">
+                <div class="founder-hero">
+                    <div class="founder-photo-wrap">
+                        <img src="founderr.png" alt="Abhishek Raj" class="founder-photo-img">
+                        <div class="founder-photo-ring"></div>
                     </div>
-                    <div class="founder-title-large">Senior Physics Teacher / Mentor of many IITians /NITians/ Medicos and Board Toppers/ 8+ years of experience in education field</div>
+                    <div class="founder-hero-info">
+                        <h2 class="founder-name-new">Abhishek Raj</h2>
+                        <span class="founder-badge">Founder & Director</span>
+                        <p class="founder-tagline">Senior Physics Teacher &bull; Mentor of IITians, NITians, Medicos &amp; Board Toppers &bull; 8+ Years in Education</p>
                     </div>
-                    
-                    <div class="founder-details-grid">
-                        <div class="founder-detail-card">
-                            <label>📧 Email</label>
-                            <div class="value">abhishek12796@icloud.com</div>
-                        </div>
-                        <div class="founder-detail-card">
-                            <label>📞 Phone</label>
-                            <div class="value">+91 8863994647</div>
-                        </div>
-                        <div class="founder-detail-card">
-                            <label>🎓 Qualification</label>
-                            <div class="value">B.Tech</div>
-                        </div>
-                        <div class="founder-detail-card">
-                            <label>⏰ Experience</label>
-                            <div class="value">8+ Years in Education</div>
-                        </div>
-                        <div class="founder-detail-card">
-                            <label>🏢 Institution</label>
-                            <div class="value">Concepts Classes (CPC)</div>
-                        </div>
-                        <div class="founder-detail-card">
-                            <label>📍 Location</label>
-                            <div class="value">Bhakharuan More, Daudnagar</div>
-                        </div>
-                    </div>
+                </div>
 
-                    <div class="social-media-section">
-                        <h3>Connect on Social Media</h3>
-                        <div class="social-links">
-                            <a href="https://facebook.com/abhishek.raj.437105" target="_blank" class="social-link facebook" title="Facebook">
-                                <i class="fab fa-facebook-f" style="color: white;"></i>
-                            </a>
-                            <a href="https://www.instagram.com/abhishek_educator/" target="_blank" class="social-link instagram" title="Instagram">
-                                <i class="fab fa-instagram" style="color: white;"></i>
-                            </a>
-                            <a href="https://wa.me/918863994647" target="_blank" class="social-link whatsapp" title="WhatsApp">
-                                <i class="fab fa-whatsapp" style="color: white;"></i>
-                            </a>
-                            <a href="mailto:abhishekcpcdaudnagar@gmail.com" class="social-link email" title="Email">
-                                <i class="fas fa-envelope" style="color: white;"></i>
-                            </a>
-                            <a href="https://www.youtube.com/channel/UCgSmfxQrwCaNEtGHbWRcPfA" target="_blank" class="social-link youtube" title="YouTube">
-                                <i class="fab fa-youtube" style="color: white;"></i>
-                            </a>
-                        </div>
+                <div class="founder-stats-row">
+                    <div class="founder-stat">
+                        <span class="stat-num">8+</span>
+                        <span class="stat-label">Years Exp</span>
                     </div>
+                    <div class="founder-stat">
+                        <span class="stat-num">B.Tech</span>
+                        <span class="stat-label">Qualification</span>
+                    </div>
+                    <div class="founder-stat">
+                        <span class="stat-num">CPC</span>
+                        <span class="stat-label">Institution</span>
+                    </div>
+                </div>
+
+                <div class="founder-contact-row">
+                    <a href="mailto:abhishek12796@icloud.com" class="founder-contact-chip">
+                        <i class="fas fa-envelope"></i>
+                        <span>abhishek12796@icloud.com</span>
+                    </a>
+                    <a href="tel:+918863994647" class="founder-contact-chip">
+                        <i class="fas fa-phone-alt"></i>
+                        <span>+91 8863994647</span>
+                    </a>
+                    <div class="founder-contact-chip">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Bhakharuan More, Daudnagar</span>
+                    </div>
+                </div>
+
+                <div class="founder-social-bar">
+                    <a href="https://facebook.com/abhishek.raj.437105" target="_blank" class="f-social fb" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/abhishek_educator/" target="_blank" class="f-social ig" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://wa.me/918863994647" target="_blank" class="f-social wa" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <a href="mailto:abhishekcpcdaudnagar@gmail.com" class="f-social em" title="Email"><i class="fas fa-envelope"></i></a>
+                    <a href="https://www.youtube.com/channel/UCgSmfxQrwCaNEtGHbWRcPfA" target="_blank" class="f-social yt" title="YouTube"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
         </div>
@@ -861,10 +956,16 @@
 
     <!-- Toppers Modal -->
     <div id="toppersModal" class="modal">
-        <div class="modal-content large-modal">
-            <div class="modal-header">
-                <h2>🏆 BOARD TOPPERS [2026]</h2>
-                <button class="close-btn" onclick="closeModal('toppers')">&times;</button>
+        <div class="modal-content tp-modal-shell">
+            <div class="tp-modal-hdr">
+                <div class="tp-modal-hdr-left">
+                    <span class="tp-modal-trophy">🏆</span>
+                    <div>
+                        <h2 class="tp-modal-title">BOARD TOPPERS</h2>
+                        <span class="tp-modal-year-tag">2026</span>
+                    </div>
+                </div>
+                <button class="tp-modal-close" onclick="closeModal('toppers')">&times;</button>
             </div>
             <div class="modal-body" id="toppersModalBody">
                 <!-- Toppers content rendered dynamically by openToppersModal() -->

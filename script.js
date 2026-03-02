@@ -12,10 +12,10 @@ function toggleDarkMode() {
     
     // Update button icon
     if (isDarkMode) {
-        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        themeToggle.innerHTML = '<i class="fas fa-eye-slash"></i>';
         themeToggle.title = 'Toggle Light Mode';
     } else {
-        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        themeToggle.innerHTML = '<i class="fas fa-eye"></i>';
         themeToggle.title = 'Toggle Dark Mode';
     }
 }
@@ -29,7 +29,7 @@ function loadDarkModePreference() {
     if (isDarkMode) {
         body.classList.add('dark-mode');
         if (themeToggle) {
-            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            themeToggle.innerHTML = '<i class="fas fa-eye-slash"></i>';
             themeToggle.title = 'Toggle Light Mode';
         }
     }
@@ -369,6 +369,15 @@ function isAdminAuthenticated() {
 function showAdminDashboard() {
     document.getElementById('adminDashboardModal').classList.add('active');
     renderAdminStats();
+    updateAdminGreeting();
+    updateLastLogin();
+    updateTileBadges();
+    renderAdminActivity();
+    logAdminActivity('login', 'Admin logged in');
+    // Clear search
+    const search = document.getElementById('adminTileSearch');
+    if (search) search.value = '';
+    filterAdminTiles('');
 }
 
 function closeAdminDashboard() {
@@ -401,10 +410,16 @@ async function verifyAdminPassword(e) {
     function toggleAdminPassword() {
         const el = document.getElementById('adminPassword');
         if (!el) return;
-        el.type = el.type === 'password' ? 'text' : 'password';
+        const isPass = el.type === 'password';
+        el.type = isPass ? 'text' : 'password';
+        const btn = el.closest('.admin-login-input-wrap')?.querySelector('.admin-login-toggle i');
+        if (btn) {
+            btn.className = isPass ? 'fas fa-eye-slash' : 'fas fa-eye';
+        }
     }
 
     function adminLogout() {
+        logAdminActivity('login', 'Admin logged out');
         setAdminAuthenticated(false);
         closeAdminDashboard();
         showToast('Logged out');
@@ -596,7 +611,7 @@ function addStudentAdmin() {
     const roll = parseInt(document.getElementById('sa_roll').value,10) || 0;
     if (!name || !cls) { showToast('Please fill name and class'); return; }
     const list = getStudents(); const id = Date.now(); list.push({ id, name, class: cls, roll, marks: [] }); saveStudents(list);
-    document.getElementById('addStudentAdminForm').reset(); renderStudentsTable(); showToast('Student added'); trySendStudentToServer({ name, class_name: cls, roll });
+    document.getElementById('addStudentAdminForm').reset(); renderStudentsTable(); showToast('Student added'); logAdminActivity('add', `Added student: ${name}`); trySendStudentToServer({ name, class_name: cls, roll });
 }
 
 function openStudentEditor(id) {
@@ -622,7 +637,7 @@ function openStudentEditor(id) {
     modal.querySelector('#closeStudentBtn').onclick = function(){ removeModal(modal); };
 }
 
-function deleteStudent(id) { if (!confirm('Delete student?')) return; let list = getStudents(); list = list.filter(s=>s.id!==id); saveStudents(list); renderStudentsTable(); showToast('Student deleted'); }
+function deleteStudent(id) { if (!confirm('Delete student?')) return; let list = getStudents(); const del = list.find(s=>s.id===id); list = list.filter(s=>s.id!==id); saveStudents(list); renderStudentsTable(); showToast('Student deleted'); logAdminActivity('delete', `Deleted student${del?' : '+del.name:''}`); }
 
 function importStudentsPrompt() { const json = prompt('Paste JSON array of students (name,class,roll)'); if (!json) return; try { const arr = JSON.parse(json); if (!Array.isArray(arr)) throw new Error('not array'); const list = getStudents(); for (const it of arr) { const id = Date.now() + Math.floor(Math.random()*1000); list.push({ id, name: it.name || it.fullName || '', class: it.class || it.class_name || '', roll: it.roll || 0, marks: it.marks||[] }); } saveStudents(list); renderStudentsTable(); showToast('Imported students'); } catch(e){ showToast('Invalid JSON'); } }
 
@@ -688,7 +703,7 @@ function renderTimetableAdmin(editor) {
         saveTimetable(list);
         renderTimetableList();
         e.target.reset();
-        showToast('Schedule added');
+        showToast('Schedule added'); logAdminActivity('add', `Added schedule: ${subj} (${day})`);
     };
     window.filterTimetableList = function() { renderTimetableList(); };
     function renderTimetableList() {
@@ -838,7 +853,10 @@ function showClassTimetable(cls) {
     html += '</div></div>';
 
     container.innerHTML = html;
-    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Smooth scroll with slight delay for animation
+    setTimeout(() => {
+        container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
 }
 
 function getMaterials() { try { const raw = localStorage.getItem('materials_list'); return raw ? JSON.parse(raw) : []; } catch(e){ return []; } }
@@ -1082,7 +1100,7 @@ function renderMaterialsAdmin(editor) {
         document.getElementById('adminMatForm').reset();
         document.getElementById('adm_mat_subject').innerHTML = '<option value="">-- Select Class First --</option>';
         renderAdminMatList();
-        showToast('Material uploaded successfully!');
+        showToast('Material uploaded successfully!'); logAdminActivity('add', 'Uploaded material: ' + title);
     };
 
     window.renderAdminMatList = function() {
@@ -1123,7 +1141,7 @@ function renderMaterialsAdmin(editor) {
         list = list.filter(m => m.id !== id);
         saveMaterials(list);
         renderAdminMatList();
-        showToast('Material deleted');
+        showToast('Material deleted'); logAdminActivity('delete', 'Deleted a material');
     };
 
     renderAdminMatList();
@@ -2031,7 +2049,7 @@ function renderTeachersAdmin(editor) {
         document.getElementById('adminTeacherForm').reset();
         renderTeachersList();
         renderTeacherSubjectButtons();
-        showToast('Teacher added');
+        showToast('Teacher added'); logAdminActivity('add', 'Added teacher: ' + name);
     };
     
     function renderTeachersList() {
@@ -2089,7 +2107,7 @@ function renderTeachersAdmin(editor) {
         saveTeachersAdmin(list);
         renderTeachersList();
         renderTeacherSubjectButtons();
-        showToast('Teacher deleted');
+        showToast('Teacher deleted'); logAdminActivity('delete', 'Deleted a teacher');
     };
     
     renderTeachersList();
@@ -2669,7 +2687,7 @@ function renderHeadlinesAdmin(editor) {
         saveHeadlinesAdmin(list);
         applyStoredHeadlines();
         hlRenderList();
-        showToast('Headline deleted');
+        showToast('Headline deleted'); logAdminActivity('delete', 'Deleted a headline');
     };
 
     window.hlMoveHeadline = function(id, direction) {
@@ -2826,7 +2844,7 @@ function renderAdminSettingsEnhanced(editor) {
         const tp = document.getElementById('set_teacher_pass').value;
         if (p) localStorage.setItem('admin_password', p);
         if (tp) localStorage.setItem('teacher_password', tp);
-        showToast('Passwords saved');
+        showToast('Passwords saved'); logAdminActivity('edit', 'Updated admin passwords');
     };
     
     document.getElementById('syncAdminBtn').onclick = function() {
@@ -2853,7 +2871,7 @@ function renderAdminSettingsEnhanced(editor) {
         const logoSub = document.querySelector('.logo-text-small p');
         if (logoText && config.name) logoText.textContent = config.name;
         if (logoSub && config.tagline) logoSub.textContent = config.tagline;
-        showToast('Site config saved & applied');
+        showToast('Site config saved & applied'); logAdminActivity('edit', 'Updated site configuration');
     };
     
     window.adminExportAllData = function() {
@@ -2866,7 +2884,7 @@ function renderAdminSettingsEnhanced(editor) {
         a.href = URL.createObjectURL(blob);
         a.download = `cpc_backup_${new Date().toISOString().slice(0,10)}.json`;
         a.click();
-        showToast('Data exported');
+        showToast('Data exported'); logAdminActivity('default', 'Exported all data backup');
     };
     
     window.adminImportAllData = function() {
@@ -2884,7 +2902,7 @@ function renderAdminSettingsEnhanced(editor) {
                     if (data[key]) localStorage.setItem(key, data[key]);
                 });
                 loadAttendanceData();
-                showToast('Data imported successfully! Refresh page for full effect.');
+                showToast('Data imported successfully! Refresh page for full effect.'); logAdminActivity('add', 'Imported data from backup');
             } catch(err) { showToast('Invalid backup file'); }
         };
         reader.readAsText(file);
@@ -2897,7 +2915,7 @@ function renderAdminSettingsEnhanced(editor) {
             localStorage.removeItem(key);
         });
         loadAttendanceData();
-        showToast('All data has been reset');
+        showToast('All data has been reset'); logAdminActivity('delete', 'Reset all site data');
     };
     
     editor.classList.add('active');
@@ -2919,14 +2937,166 @@ function renderAdminStats() {
     const totalHeadlines = getHeadlinesAdmin().length;
     const totalContacts = getContactsAdmin().length;
     
-    bar.innerHTML = `
-        <div class="admin-stat-item"><span class="stat-num">${totalStudents}</span><span class="stat-label">Students</span></div>
-        <div class="admin-stat-item"><span class="stat-num">${totalTeachers}</span><span class="stat-label">Teachers</span></div>
-        <div class="admin-stat-item"><span class="stat-num">${totalMaterials}</span><span class="stat-label">Materials</span></div>
-        <div class="admin-stat-item"><span class="stat-num">${totalResults}</span><span class="stat-label">Results</span></div>
-        <div class="admin-stat-item"><span class="stat-num">${totalHeadlines}</span><span class="stat-label">Headlines</span></div>
-        <div class="admin-stat-item"><span class="stat-num">${totalContacts}</span><span class="stat-label">Messages</span></div>
-    `;
+    const stats = [
+        { num: totalStudents, label: 'Students', color: '#667eea', icon: 'fa-users' },
+        { num: totalTeachers, label: 'Teachers', color: '#f5576c', icon: 'fa-chalkboard-teacher' },
+        { num: totalMaterials, label: 'Materials', color: '#43e97b', icon: 'fa-book-open' },
+        { num: totalResults, label: 'Results', color: '#fa709a', icon: 'fa-chart-bar' },
+        { num: totalHeadlines, label: 'Headlines', color: '#ff9a9e', icon: 'fa-newspaper' },
+        { num: totalContacts, label: 'Messages', color: '#fad0c4', icon: 'fa-envelope' }
+    ];
+    
+    bar.innerHTML = stats.map(s => `
+        <div class="admin-stat-item">
+            <span class="stat-num" data-target="${s.num}" style="color:${s.color}">0</span>
+            <span class="stat-label">${s.label}</span>
+        </div>
+    `).join('');
+    // Animate counters
+    animateStatCounters();
+}
+
+// Animated stat counters
+function animateStatCounters() {
+    const counters = document.querySelectorAll('.admin-stat-item .stat-num[data-target]');
+    counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-target')) || 0;
+        const duration = 800;
+        const start = performance.now();
+        const animate = (now) => {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+            counter.textContent = Math.round(eased * target);
+            if (progress < 1) requestAnimationFrame(animate);
+        };
+        requestAnimationFrame(animate);
+    });
+}
+
+// ====== TILE BADGES (item counts) ======
+function updateTileBadges() {
+    const badges = {
+        'students': (() => { let t = 0; (typeof CLASSES !== 'undefined' ? CLASSES : []).forEach(c => { const d = (typeof attendanceData !== 'undefined' ? attendanceData[c] : null) || {students:[]}; t += (d.students||[]).length; }); return t; })(),
+        'timetable': (typeof getTimetable === 'function' ? getTimetable() : []).length,
+        'materials': (typeof getMaterials === 'function' ? getMaterials() : []).length,
+        'results': (typeof getResultPDFs === 'function' ? getResultPDFs() : []).length,
+        'teachers': (typeof getTeachersAdmin === 'function' ? getTeachersAdmin() : []).length,
+        'gallery': (() => { try { return JSON.parse(localStorage.getItem('admin_gallery') || '[]').length; } catch(e) { return 0; } })(),
+        'toppers': (() => { try { return JSON.parse(localStorage.getItem('admin_toppers') || '[]').length; } catch(e) { return 0; } })(),
+        'headlines': (typeof getHeadlinesAdmin === 'function' ? getHeadlinesAdmin() : []).length,
+        'contacts': (typeof getContactsAdmin === 'function' ? getContactsAdmin() : []).length,
+        'attendance': 0
+    };
+    Object.keys(badges).forEach(key => {
+        const el = document.getElementById('badge-' + key);
+        if (!el) return;
+        const count = badges[key];
+        if (count > 0) {
+            el.textContent = count;
+            el.classList.add('has-count');
+        } else {
+            el.classList.remove('has-count');
+        }
+    });
+}
+
+// ====== ADMIN ACTIVITY LOG ======
+function getAdminActivity() {
+    try { return JSON.parse(localStorage.getItem('admin_activity_log') || '[]'); } catch(e) { return []; }
+}
+function saveAdminActivity(log) {
+    try { localStorage.setItem('admin_activity_log', JSON.stringify(log.slice(-50))); } catch(e) {} // keep last 50
+}
+function logAdminActivity(type, message) {
+    const log = getAdminActivity();
+    log.push({ type: type || 'default', message, time: new Date().toISOString() });
+    saveAdminActivity(log);
+    renderAdminActivity();
+}
+function renderAdminActivity() {
+    const list = document.getElementById('admActivityList');
+    if (!list) return;
+    const log = getAdminActivity();
+    if (log.length === 0) {
+        list.innerHTML = '<div class="adm-activity-empty">No recent activity</div>';
+        return;
+    }
+    const iconMap = { add: 'fa-plus', edit: 'fa-pen', delete: 'fa-trash', login: 'fa-sign-in-alt', default: 'fa-circle' };
+    list.innerHTML = log.slice().reverse().slice(0, 20).map(item => {
+        const d = new Date(item.time);
+        const timeStr = d.toLocaleString('en-IN', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit', hour12:true });
+        const icon = iconMap[item.type] || iconMap.default;
+        const cls = 'act-' + (item.type || 'default');
+        return `<div class="adm-activity-item">
+            <div class="adm-act-icon ${cls}"><i class="fas ${icon}"></i></div>
+            <span class="adm-act-text">${item.message}</span>
+            <span class="adm-act-time">${timeStr}</span>
+        </div>`;
+    }).join('');
+}
+function clearAdminActivity() {
+    if (!confirm('Clear all activity history?')) return;
+    localStorage.removeItem('admin_activity_log');
+    renderAdminActivity();
+    showToast('Activity log cleared');
+}
+
+// ====== REFRESH DASHBOARD ======
+function refreshAdminDashboard() {
+    renderAdminStats();
+    updateTileBadges();
+    renderAdminActivity();
+    updateAdminGreeting();
+    showToast('Dashboard refreshed');
+}
+
+// Admin greeting based on time of day
+function updateAdminGreeting() {
+    const el = document.getElementById('adminGreeting');
+    if (!el) return;
+    const hour = new Date().getHours();
+    let greeting = 'Good evening';
+    if (hour < 12) greeting = 'Good morning';
+    else if (hour < 17) greeting = 'Good afternoon';
+    el.textContent = `${greeting}, Admin`;
+}
+
+// Last login tracking
+function updateLastLogin() {
+    const el = document.getElementById('adminLastLogin');
+    if (!el) return;
+    const lastLogin = localStorage.getItem('admin_last_login');
+    const now = new Date();
+    // Save current login time
+    localStorage.setItem('admin_last_login', now.toISOString());
+    if (lastLogin) {
+        const d = new Date(lastLogin);
+        const timeStr = d.toLocaleString('en-IN', { 
+            day: 'numeric', month: 'short', year: 'numeric',
+            hour: '2-digit', minute: '2-digit', hour12: true 
+        });
+        el.innerHTML = `<i class="fas fa-clock"></i> Last login: ${timeStr}`;
+    } else {
+        el.innerHTML = `<i class="fas fa-clock"></i> Welcome! This is your first login.`;
+    }
+}
+
+// Filter admin tiles by search
+function filterAdminTiles(query) {
+    const tiles = document.querySelectorAll('#adminTilesGrid .admin-tile');
+    const noResults = document.getElementById('adminNoResults');
+    const q = (query || '').toLowerCase().trim();
+    let visible = 0;
+    tiles.forEach(tile => {
+        const title = (tile.querySelector('.tile-title')?.textContent || '').toLowerCase();
+        const desc = (tile.querySelector('.tile-desc')?.textContent || '').toLowerCase();
+        const section = (tile.getAttribute('data-section') || '').toLowerCase();
+        const match = !q || title.includes(q) || desc.includes(q) || section.includes(q);
+        tile.classList.toggle('tile-hidden', !match);
+        if (match) visible++;
+    });
+    if (noResults) noResults.style.display = visible === 0 ? 'block' : 'none';
 }
 
 // Wire adminEditor openSectionEditor to use these for their section names
@@ -3828,8 +3998,10 @@ function openToppersModal() {
 
     const years = [...new Set(toppers.map(t => t.year).filter(Boolean))].sort().reverse();
     const displayYear = years.length > 0 ? years[0] : '2026';
-    const headerEl = modal.querySelector('.modal-header h2');
-    if (headerEl) headerEl.textContent = `🏆 BOARD TOPPERS [${displayYear}]`;
+    const headerEl = modal.querySelector('.tp-modal-title');
+    const yearTag = modal.querySelector('.tp-modal-year-tag');
+    if (headerEl) headerEl.textContent = 'BOARD TOPPERS';
+    if (yearTag) yearTag.textContent = displayYear;
 
     const medalEmoji = ['🥇', '🥈', '🥉'];
     const medalGradient = [
@@ -3983,7 +4155,6 @@ function renderTeacherSubjectButtons() {
         const label = SUBJECT_LABELS[s] || s.charAt(0).toUpperCase() + s.slice(1);
         html += `<button class="btn-teacher" onclick="openTeacherModal('${s}')">${label}</button>`;
     });
-    html += `<button class="btn-teacher toppers-btn" onclick="openToppersModal()">🏆 Toppers</button>`;
     container.innerHTML = html;
 }
 
@@ -4203,8 +4374,12 @@ function renderAttendanceClassButtons() {
 function renderStudentClasses() {
     const container = document.getElementById('classListContainer');
     if (!container) return;
-    container.innerHTML = CLASSES.map(cls => `
-        <button class="class-select-btn ${cls === currentStudentClass ? 'active' : ''}" onclick="selectStudentClass('${cls}')">Class ${cls}</button>
+    container.innerHTML = '<div class="sm-sidebar-title">📚 Classes</div>' + CLASSES.map((cls, i) => `
+        <button class="sm-class-btn ${cls === currentStudentClass ? 'active' : ''}" onclick="selectStudentClass('${cls}')" style="animation-delay:${i * 0.06}s">
+            <span class="sm-class-btn-icon">📖</span>
+            <span class="sm-class-btn-text">Class ${cls}</span>
+            <span class="sm-class-btn-arrow">›</span>
+        </button>
     `).join('');
     // render default class
     selectStudentClass(currentStudentClass || CLASSES[0]);
@@ -4213,10 +4388,10 @@ function renderStudentClasses() {
 function selectStudentClass(cls) {
     currentStudentClass = cls;
     const header = document.getElementById('studentClassHeader');
-    if (header) header.textContent = `Class ${cls}`;
+    if (header) header.innerHTML = `<span class="sm-class-header-icon">👨‍🎓</span> Class ${cls}`;
     renderStudentsForClass(cls);
-    document.querySelectorAll('.class-select-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.textContent.trim() === `Class ${cls}`);
+    document.querySelectorAll('.sm-class-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.querySelector('.sm-class-btn-text').textContent.trim() === `Class ${cls}`);
     });
 }
 
@@ -4225,19 +4400,21 @@ function renderStudentsForClass(cls) {
     if (!container) return;
     const classData = attendanceData[cls] || { students: [] };
     if (!classData.students || classData.students.length === 0) {
-        container.innerHTML = '<p class="attendance-empty-message">No students added yet for this class.</p>';
+        container.innerHTML = '<div class="sm-empty"><div class="sm-empty-icon">📭</div><p>No students added yet for this class.</p></div>';
         return;
     }
     const students = [...classData.students].sort((a, b) => parseInt(a.roll) - parseInt(b.roll));
-    container.innerHTML = students.map(s => `
-        <div class="student-card">
-            <div class="student-card-left">
-                <div class="student-name">${s.name}</div>
-                <div class="student-roll">Roll: ${s.roll}</div>
+    container.innerHTML = students.map((s, i) => `
+        <div class="sm-student-card" style="animation-delay:${i * 0.05}s">
+            <div class="sm-student-avatar">${s.name.charAt(0).toUpperCase()}</div>
+            <div class="sm-student-info">
+                <div class="sm-student-name">${s.name}</div>
+                <div class="sm-student-roll">Roll No: ${s.roll}</div>
             </div>
-            <div class="student-card-right">
-                <button class="btn-primary" onclick="openStudentModal('${cls}','${s.id}')">View Details</button>
-            </div>
+            <button class="sm-view-btn" onclick="openStudentModal('${cls}','${s.id}')">
+                <span>View Details</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
         </div>
     `).join('');
 }
@@ -4335,9 +4512,17 @@ function openStudentModal(cls, studentId) {
 
     body.innerHTML = `
         <div class="sp-profile">
+            <!-- Back button -->
+            <button class="sp-back-btn" onclick="openStudentsModal()">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </button>
+
             <!-- Student info header -->
             <div class="sp-header">
-                <div class="sp-avatar">${student.name.charAt(0).toUpperCase()}</div>
+                <div class="sp-avatar-wrap">
+                    <div class="sp-avatar">${student.name.charAt(0).toUpperCase()}</div>
+                    <div class="sp-avatar-ring"></div>
+                </div>
                 <div class="sp-header-info">
                     <h3 class="sp-name">${escapeHtml(student.name)}</h3>
                     <div class="sp-meta-row">
@@ -4345,27 +4530,27 @@ function openStudentModal(cls, studentId) {
                         <span class="sp-badge">🔢 Roll: ${student.roll}</span>
                         <span class="sp-badge">👥 ${totalStudentsInClass} students in class</span>
                     </div>
-                    ${subjects.length > 0 ? `<div class="sp-subjects">${subjects.map(s => `<span class="sp-subject-tag">${s}</span>`).join('')}</div>` : ''}
+                    ${subjects.length > 0 ? `<div class="sp-subjects">${subjects.map((s, idx) => `<span class="sp-subject-tag sp-stag-${idx % 6}" style="animation-delay:${0.3 + idx * 0.08}s">${s}</span>`).join('')}</div>` : ''}
                 </div>
             </div>
 
             <!-- Attendance overview -->
-            <div class="sp-section">
+            <div class="sp-section sp-anim-section" style="animation-delay:0.1s">
                 <h4 class="sp-section-title">📊 Attendance Overview</h4>
                 <div class="sp-attendance-grid">
-                    <div class="sp-att-stat">
+                    <div class="sp-att-stat sp-att-overall">
                         <div class="sp-att-num" style="color:${attColor.color}; font-size:28px;">${attendancePct}%</div>
                         <div class="sp-att-label">Overall</div>
                     </div>
-                    <div class="sp-att-stat">
+                    <div class="sp-att-stat sp-att-present">
                         <div class="sp-att-num" style="color:#10b981;">${totalPresent}</div>
                         <div class="sp-att-label">Present</div>
                     </div>
-                    <div class="sp-att-stat">
+                    <div class="sp-att-stat sp-att-absent">
                         <div class="sp-att-num" style="color:#ef4444;">${totalAbsent}</div>
                         <div class="sp-att-label">Absent</div>
                     </div>
-                    <div class="sp-att-stat">
+                    <div class="sp-att-stat sp-att-total">
                         <div class="sp-att-num" style="color:#6366f1;">${totalDelivered}</div>
                         <div class="sp-att-label">Total Classes</div>
                     </div>
@@ -4380,7 +4565,7 @@ function openStudentModal(cls, studentId) {
             </div>
 
             <!-- Monthly breakdown -->
-            <div class="sp-section">
+            <div class="sp-section sp-anim-section" style="animation-delay:0.2s">
                 <h4 class="sp-section-title">📅 Monthly Attendance Breakdown</h4>
                 <div class="sp-monthly-breakdown">
                     ${monthlyHtml}
@@ -4388,7 +4573,7 @@ function openStudentModal(cls, studentId) {
             </div>
 
             <!-- Results section -->
-            <div class="sp-section">
+            <div class="sp-section sp-anim-section" style="animation-delay:0.3s">
                 <h4 class="sp-section-title">📋 Results</h4>
                 <div class="sp-results-wrap">
                     ${resultsHtml}
@@ -4396,6 +4581,10 @@ function openStudentModal(cls, studentId) {
             </div>
         </div>
     `;
+
+    // Update header text for detail view
+    const headerEl = modal.querySelector('.sm-modal-header h2');
+    if (headerEl) headerEl.textContent = `${escapeHtml(student.name)} — Details`;
 
     if (modal) {
         modal.classList.add('active');
@@ -4408,13 +4597,17 @@ function openStudentsModal() {
     const body = document.getElementById('studentModalBody');
     if (!body || !modal) return;
 
+    // Update header text for list view
+    const headerEl = modal.querySelector('.sm-modal-header h2');
+    if (headerEl) headerEl.textContent = 'Student Details';
+
     // Inject class list and students container into modal body
     body.innerHTML = `
-        <div style="display:flex; gap:18px; align-items:flex-start;">
-            <div style="min-width:160px; max-width:220px;" id="classListContainer"></div>
-            <div style="flex:1;" id="studentsCardsContainer">
-                <h3 id="studentClassHeader">Class ${currentStudentClass}</h3>
-                <div id="studentsCards"></div>
+        <div class="sm-layout">
+            <div class="sm-sidebar" id="classListContainer"></div>
+            <div class="sm-main">
+                <h3 class="sm-class-header" id="studentClassHeader"><span class="sm-class-header-icon">👨‍🎓</span> Class ${currentStudentClass}</h3>
+                <div class="sm-students-grid" id="studentsCards"></div>
             </div>
         </div>
     `;
