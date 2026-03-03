@@ -4115,17 +4115,20 @@ function openTeacherModal(subject) {
         body.innerHTML = `<div class="teacher-grid">
             ${teachers.map(t => `
                 <div class="teacher-card">
-                    <div class="teacher-photo-container">
-                        ${t.photo ? `<img src="${t.photo}" class="teacher-photo" alt="${escapeHtml(t.name)}">` : `<div class="teacher-photo-placeholder">👤</div>`}
+                    <div class="tcard-header">
+                        <div class="tcard-header-bg"></div>
+                        <div class="teacher-photo-container">
+                            ${t.photo ? `<img src="${t.photo}" class="teacher-photo" alt="${escapeHtml(t.name)}">` : `<div class="teacher-photo-placeholder">👤</div>`}
+                        </div>
                     </div>
                     <div class="teacher-info">
                         <div class="teacher-name">${escapeHtml(t.name)}</div>
                         <div class="teacher-subject">${escapeHtml(label)} Teacher</div>
                         <div class="teacher-details">
-                            ${t.email ? `<div class="teacher-detail-item"><strong>📧 Email:</strong><span>${escapeHtml(t.email)}</span></div>` : ''}
-                            ${t.phone ? `<div class="teacher-detail-item"><strong>📞 Phone:</strong><span>${escapeHtml(t.phone)}</span></div>` : ''}
-                            ${t.qualification ? `<div class="teacher-detail-item"><strong>🎓 Qualification:</strong><span>${escapeHtml(t.qualification)}</span></div>` : ''}
-                            ${t.experience ? `<div class="teacher-detail-item"><strong>⏰ Experience:</strong><span>${escapeHtml(t.experience)}</span></div>` : ''}
+                            ${t.email ? `<div class="teacher-detail-item"><div class="tdet-icon tdet-email"><i class="fas fa-envelope"></i></div><div class="tdet-content"><span class="tdet-label">Email</span><span class="tdet-value">${escapeHtml(t.email)}</span></div></div>` : ''}
+                            ${t.phone ? `<div class="teacher-detail-item"><div class="tdet-icon tdet-phone"><i class="fas fa-phone-alt"></i></div><div class="tdet-content"><span class="tdet-label">Phone</span><span class="tdet-value">${escapeHtml(t.phone)}</span></div></div>` : ''}
+                            ${t.qualification ? `<div class="teacher-detail-item"><div class="tdet-icon tdet-qual"><i class="fas fa-graduation-cap"></i></div><div class="tdet-content"><span class="tdet-label">Qualification</span><span class="tdet-value">${escapeHtml(t.qualification)}</span></div></div>` : ''}
+                            ${t.experience ? `<div class="teacher-detail-item"><div class="tdet-icon tdet-exp"><i class="fas fa-award"></i></div><div class="tdet-content"><span class="tdet-label">Experience</span><span class="tdet-value">${escapeHtml(t.experience)} Years</span></div></div>` : ''}
                         </div>
                     </div>
                 </div>
@@ -4461,43 +4464,48 @@ function openStudentModal(cls, studentId) {
     const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     let monthlyHtml = '';
     if (sortedMonths.length > 0) {
-        monthlyHtml = sortedMonths.map(m => {
+        monthlyHtml = sortedMonths.map((m, idx) => {
             const ms = monthlyStats[m];
             const mPct = ms.total === 0 ? 0 : Math.round((ms.present / ms.total) * 100);
             const mColor = getAttendanceColorClass(mPct);
             const [y, mon] = m.split('-');
             const monthLabel = monthNames[parseInt(mon) - 1] + ' ' + y;
-            return `<div class="sp-month-row">
+            return `<div class="sp-month-row" style="animation-delay:${idx * 0.06}s">
+                <div class="sp-month-idx">${idx + 1}</div>
                 <span class="sp-month-label">${monthLabel}</span>
                 <div class="sp-month-bar-wrap">
-                    <div class="sp-month-bar" style="width:${mPct}%; background:${mColor.color};"></div>
+                    <div class="sp-month-bar" style="width:${mPct}%; background:linear-gradient(90deg, ${mColor.color}cc, ${mColor.color});"></div>
                 </div>
                 <span class="sp-month-pct" style="color:${mColor.color};">${mPct}%</span>
-                <span class="sp-month-detail">${ms.present}/${ms.total}</span>
+                <span class="sp-month-detail"><span class="sp-md-present">${ms.present}</span>/<span class="sp-md-total">${ms.total}</span></span>
             </div>`;
         }).join('');
     } else {
-        monthlyHtml = '<p class="sp-no-data">No monthly data available yet.</p>';
+        monthlyHtml = '<div class="sp-no-data"><i class="fas fa-calendar-times" style="font-size:24px;margin-bottom:8px;display:block;opacity:0.4;"></i>No monthly data available yet.</div>';
     }
 
     // --- Results section HTML ---
     let resultsHtml = '';
     if (examNames.length > 0) {
-        resultsHtml = examNames.map(examName => {
+        resultsHtml = examNames.map((examName, eIdx) => {
             const pdfs = classPdfs.filter(p => p.examName === examName);
-            return `<div class="sp-exam-group">
-                <div class="sp-exam-name">📝 ${escapeHtml(examName)}</div>
+            return `<div class="sp-exam-group" style="animation-delay:${eIdx * 0.08}s">
+                <div class="sp-exam-header">
+                    <span class="sp-exam-icon"><i class="fas fa-file-alt"></i></span>
+                    <span class="sp-exam-name">${escapeHtml(examName)}</span>
+                    <span class="sp-exam-count">${pdfs.length} file${pdfs.length > 1 ? 's' : ''}</span>
+                </div>
                 <div class="sp-pdf-list">
                     ${pdfs.map(p => `
                         <div class="sp-pdf-card">
-                            <div class="sp-pdf-icon">📄</div>
+                            <div class="sp-pdf-icon"><i class="fas fa-file-pdf"></i></div>
                             <div class="sp-pdf-info">
                                 <div class="sp-pdf-title">${escapeHtml(p.title || examName)}</div>
-                                <div class="sp-pdf-meta">Uploaded: ${new Date(p.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+                                <div class="sp-pdf-meta"><i class="fas fa-clock" style="margin-right:4px;opacity:0.6;"></i>Uploaded: ${new Date(p.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
                             </div>
                             <div class="sp-pdf-actions">
-                                <button onclick="viewResultPdf(${p.id})" class="sm-doc-btn view">👁️ View</button>
-                                <button onclick="downloadResultPdf(${p.id})" class="sm-doc-btn download">⬇️ Download</button>
+                                <button onclick="viewResultPdf(${p.id})" class="sp-pdf-btn sp-pdf-view"><i class="fas fa-eye"></i> View</button>
+                                <button onclick="downloadResultPdf(${p.id})" class="sp-pdf-btn sp-pdf-dl"><i class="fas fa-download"></i> Download</button>
                             </div>
                         </div>
                     `).join('')}
@@ -4505,7 +4513,7 @@ function openStudentModal(cls, studentId) {
             </div>`;
         }).join('');
     } else {
-        resultsHtml = '<p class="sp-no-data">No results published yet for this class.</p>';
+        resultsHtml = '<div class="sp-no-data"><i class="fas fa-clipboard-list" style="font-size:24px;margin-bottom:8px;display:block;opacity:0.4;"></i>No results published yet for this class.</div>';
     }
 
     // --- Subjects for this class ---
@@ -4537,37 +4545,47 @@ function openStudentModal(cls, studentId) {
 
             <!-- Attendance overview -->
             <div class="sp-section sp-anim-section" style="animation-delay:0.1s">
-                <h4 class="sp-section-title">📊 Attendance Overview</h4>
+                <h4 class="sp-section-title"><span class="sp-title-icon sp-ti-chart"><i class="fas fa-chart-pie"></i></span> Attendance Overview</h4>
                 <div class="sp-attendance-grid">
                     <div class="sp-att-stat sp-att-overall">
-                        <div class="sp-att-num" style="color:${attColor.color}; font-size:28px;">${attendancePct}%</div>
+                        <div class="sp-att-icon-ring" style="--ring-color:${attColor.color}">
+                            <svg viewBox="0 0 36 36" class="sp-ring-svg">
+                                <path class="sp-ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                <path class="sp-ring-fill" stroke="${attColor.color}" stroke-dasharray="${attendancePct}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            </svg>
+                            <span class="sp-ring-val" style="color:${attColor.color}">${attendancePct}%</span>
+                        </div>
                         <div class="sp-att-label">Overall</div>
                     </div>
                     <div class="sp-att-stat sp-att-present">
+                        <div class="sp-att-badge" style="--badge-color:#10b981"><i class="fas fa-check-circle"></i></div>
                         <div class="sp-att-num" style="color:#10b981;">${totalPresent}</div>
                         <div class="sp-att-label">Present</div>
                     </div>
                     <div class="sp-att-stat sp-att-absent">
+                        <div class="sp-att-badge" style="--badge-color:#ef4444"><i class="fas fa-times-circle"></i></div>
                         <div class="sp-att-num" style="color:#ef4444;">${totalAbsent}</div>
                         <div class="sp-att-label">Absent</div>
                     </div>
                     <div class="sp-att-stat sp-att-total">
+                        <div class="sp-att-badge" style="--badge-color:#6366f1"><i class="fas fa-book-open"></i></div>
                         <div class="sp-att-num" style="color:#6366f1;">${totalDelivered}</div>
                         <div class="sp-att-label">Total Classes</div>
                     </div>
                 </div>
                 <div class="sp-progress-wrap">
-                    <div class="sp-progress-bar" style="width:${attendancePct}%; background:${attColor.color};"></div>
+                    <div class="sp-progress-bar" style="width:${attendancePct}%; background:linear-gradient(90deg, ${attColor.color}, ${attColor.color}dd);"></div>
+                    <span class="sp-progress-pct" style="left:${Math.min(Math.max(attendancePct, 5), 95)}%">${attendancePct}%</span>
                 </div>
                 <div class="sp-progress-legend">
-                    <span>${totalPresent} attended out of ${totalDelivered} delivered</span>
-                    <span style="color:${attColor.color}; font-weight:600;">${attColor.text}</span>
+                    <span><i class="fas fa-info-circle" style="opacity:0.5;margin-right:4px;"></i>${totalPresent} attended out of ${totalDelivered} delivered</span>
+                    <span class="sp-att-verdict" style="--verdict-color:${attColor.color}">${attColor.text}</span>
                 </div>
             </div>
 
             <!-- Monthly breakdown -->
             <div class="sp-section sp-anim-section" style="animation-delay:0.2s">
-                <h4 class="sp-section-title">📅 Monthly Attendance Breakdown</h4>
+                <h4 class="sp-section-title"><span class="sp-title-icon sp-ti-cal"><i class="fas fa-calendar-alt"></i></span> Monthly Attendance Breakdown</h4>
                 <div class="sp-monthly-breakdown">
                     ${monthlyHtml}
                 </div>
@@ -4575,7 +4593,7 @@ function openStudentModal(cls, studentId) {
 
             <!-- Results section -->
             <div class="sp-section sp-anim-section" style="animation-delay:0.3s">
-                <h4 class="sp-section-title">📋 Results</h4>
+                <h4 class="sp-section-title"><span class="sp-title-icon sp-ti-res"><i class="fas fa-trophy"></i></span> Results</h4>
                 <div class="sp-results-wrap">
                     ${resultsHtml}
                 </div>
@@ -5792,7 +5810,11 @@ function loadFounderProfiles() {
 
         // Update tab labels
         const tab = document.querySelector('.founder-tab[data-founder="' + key + '"]');
-        if (tab && p.name) tab.textContent = p.name;
+        if (tab && p.name) {
+            const nameSpan = tab.querySelector('.ftab-name');
+            if (nameSpan) nameSpan.textContent = p.name;
+            else tab.textContent = p.name;
+        }
 
         // Rebuild contact chips
         const contactRow = document.getElementById('founderContacts-' + key);

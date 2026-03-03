@@ -61,39 +61,59 @@
             <div class="sidebar" id="sidebar">
                 <div class="sidebar-header">
                     <div class="sidebar-brand">
-                        <div class="sidebar-brand-icon">☰</div>
-                        <span class="sidebar-brand-text">Menu</span>
+                        <div class="sidebar-brand-icon"><i class="fas fa-bars"></i></div>
+                        <div class="sidebar-brand-info">
+                            <span class="sidebar-brand-text">CPC</span>
+                            <span class="sidebar-brand-sub">Navigation</span>
+                        </div>
                     </div>
                     <button class="sidebar-close" onclick="toggleSidebar()">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <div class="sidebar-divider"></div>
+
                 <nav class="nav-section">
+                    <div class="nav-section-label">MAIN MENU</div>
                     <a href="#" class="sidebar-nav-item active" onclick="showSection('home'); toggleSidebar(); return false;">
                         <div class="sidebar-icon-wrap"><i class="fas fa-home"></i></div>
-                        <span>Home</span>
+                        <div class="sidebar-item-text">
+                            <span class="sidebar-item-title">Home</span>
+                            <span class="sidebar-item-desc">Dashboard</span>
+                        </div>
                         <div class="sidebar-item-arrow"><i class="fas fa-chevron-right"></i></div>
                     </a>
                     <a href="#" class="sidebar-nav-item" onclick="showSection('gallery'); toggleSidebar(); return false;">
                         <div class="sidebar-icon-wrap"><i class="fas fa-images"></i></div>
-                        <span>Gallery</span>
+                        <div class="sidebar-item-text">
+                            <span class="sidebar-item-title">Gallery</span>
+                            <span class="sidebar-item-desc">Photos & Media</span>
+                        </div>
                         <div class="sidebar-item-arrow"><i class="fas fa-chevron-right"></i></div>
                     </a>
                     <a href="#" class="sidebar-nav-item" onclick="showSection('about'); toggleSidebar(); return false;">
                         <div class="sidebar-icon-wrap"><i class="fas fa-info-circle"></i></div>
-                        <span>About</span>
+                        <div class="sidebar-item-text">
+                            <span class="sidebar-item-title">About</span>
+                            <span class="sidebar-item-desc">Our Story</span>
+                        </div>
                         <div class="sidebar-item-arrow"><i class="fas fa-chevron-right"></i></div>
                     </a>
                     <a href="#" class="sidebar-nav-item" onclick="openModal('contact'); toggleSidebar(); return false;">
                         <div class="sidebar-icon-wrap"><i class="fas fa-envelope"></i></div>
-                        <span>Contact</span>
+                        <div class="sidebar-item-text">
+                            <span class="sidebar-item-title">Contact</span>
+                            <span class="sidebar-item-desc">Get in Touch</span>
+                        </div>
                         <div class="sidebar-item-arrow"><i class="fas fa-chevron-right"></i></div>
                     </a>
                 </nav>
-                <div class="sidebar-divider"></div>
+
                 <div class="sidebar-footer">
-                    <span>© CPC 2026</span>
+                    <div class="sidebar-footer-wave"></div>
+                    <div class="sidebar-footer-content">
+                        <div class="sidebar-footer-logo">CPC</div>
+                        <span>© CPC 2026</span>
+                    </div>
                 </div>
             </div>
 
@@ -900,9 +920,15 @@
             <div class="modal-body founder-modal-body">
                 <!-- Founder Switch Tabs -->
                 <div class="founder-switch-tabs">
-                    <button class="founder-tab active" data-founder="abhishek" onclick="switchFounder('abhishek')">Abhishek Raj</button>
-                    <button class="founder-tab" data-founder="avinash" onclick="switchFounder('avinash')">Avinash Kumar</button>
-                    <div class="founder-tab-indicator"></div>
+                    <div class="founder-tab-slider"></div>
+                    <button class="founder-tab active" data-founder="abhishek" onclick="switchFounder('abhishek')">
+                        <span class="ftab-avatar"><img src="founderr.png" alt="A"></span>
+                        <span class="ftab-name">Abhishek Raj</span>
+                    </button>
+                    <button class="founder-tab" data-founder="avinash" onclick="switchFounder('avinash')">
+                        <span class="ftab-avatar"><img src="avinash.png" alt="A"></span>
+                        <span class="ftab-name">Avinash Anand</span>
+                    </button>
                 </div>
 
                 <!-- Abhishek Raj Profile -->
