@@ -12,10 +12,10 @@ function toggleDarkMode() {
     
     // Update button icon
     if (isDarkMode) {
-        themeToggle.innerHTML = '<i class="fas fa-eye-slash"></i>';
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
         themeToggle.title = 'Toggle Light Mode';
     } else {
-        themeToggle.innerHTML = '<i class="fas fa-eye"></i>';
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
         themeToggle.title = 'Toggle Dark Mode';
     }
 }
@@ -29,7 +29,7 @@ function loadDarkModePreference() {
     if (isDarkMode) {
         body.classList.add('dark-mode');
         if (themeToggle) {
-            themeToggle.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
             themeToggle.title = 'Toggle Light Mode';
         }
     }
@@ -3124,6 +3124,7 @@ openSectionEditor = function(section){
     if(section === 'toppers'){ renderToppersAdmin(editor); return; }
     if(section === 'headlines'){ renderHeadlinesAdmin(editor); return; }
     if(section === 'contacts'){ renderContactsAdmin(editor); return; }
+    if(section === 'founders'){ renderFoundersAdmin(editor); return; }
     if(section === 'admin'){ renderAdminSettingsEnhanced(editor); return; }
     
     // fallback to original behaviour for others
@@ -5701,4 +5702,211 @@ function showAttendanceSystemAlert(message, type = 'info') {
 // EVENT LISTENERS FOR NAVIGATION
 document.addEventListener('DOMContentLoaded', function() {
     loadAttendanceData();
+    loadFounderProfiles();
 });
+
+// ====== FOUNDER PROFILES MANAGEMENT ======
+
+function getFounderDefaults() {
+    return {
+        abhishek: {
+            name: 'Abhishek Raj',
+            role: 'Founder & Director',
+            tagline: 'Senior Physics Teacher • Mentor of IITians, NITians, Medicos & Board Toppers • 8+ Years in Education',
+            experience: '8+',
+            qualification: 'B.Tech',
+            institution: 'CPC',
+            email: 'abhishek12796@icloud.com',
+            phone: '+91 8863994647',
+            location: 'Bhakharuan More, Daudnagar',
+            photo: 'founderr.png',
+            facebook: 'https://facebook.com/abhishek.raj.437105',
+            instagram: 'https://www.instagram.com/abhishek_educator/',
+            whatsapp: 'https://wa.me/918863994647',
+            emailLink: 'mailto:abhishekcpcdaudnagar@gmail.com',
+            youtube: 'https://www.youtube.com/channel/UCgSmfxQrwCaNEtGHbWRcPfA'
+        },
+        avinash: {
+            name: 'Avinash Kumar',
+            role: 'Co-Founder',
+            tagline: 'Dedicated Educator • Academic Coordinator',
+            experience: '—',
+            qualification: '—',
+            institution: 'CPC',
+            email: '',
+            phone: '',
+            location: 'Daudnagar',
+            photo: 'avinash.png',
+            facebook: '',
+            instagram: '',
+            whatsapp: '',
+            emailLink: '',
+            youtube: ''
+        }
+    };
+}
+
+function getFounderProfiles() {
+    try {
+        const raw = localStorage.getItem('founder_profiles');
+        if (raw) return JSON.parse(raw);
+    } catch(e) {}
+    return getFounderDefaults();
+}
+
+function saveFounderProfiles(data) {
+    try { localStorage.setItem('founder_profiles', JSON.stringify(data)); } catch(e) {}
+}
+
+function switchFounder(key) {
+    // Update tabs
+    document.querySelectorAll('.founder-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.getAttribute('data-founder') === key);
+    });
+    // Update panels
+    document.querySelectorAll('.founder-profile-panel').forEach(panel => {
+        panel.classList.toggle('active', panel.id === 'founderPanel-' + key);
+    });
+}
+
+function loadFounderProfiles() {
+    const profiles = getFounderProfiles();
+    ['abhishek', 'avinash'].forEach(key => {
+        const p = profiles[key];
+        if (!p) return;
+        const nameEl = document.getElementById('founderName-' + key);
+        const badgeEl = document.getElementById('founderBadge-' + key);
+        const taglineEl = document.getElementById('founderTagline-' + key);
+        const photoEl = document.getElementById('founderPhoto-' + key);
+        const stat1 = document.getElementById('founderStat1-' + key);
+        const stat2 = document.getElementById('founderStat2-' + key);
+        const stat3 = document.getElementById('founderStat3-' + key);
+
+        if (nameEl) nameEl.textContent = p.name || '';
+        if (badgeEl) badgeEl.textContent = p.role || '';
+        if (taglineEl) taglineEl.innerHTML = (p.tagline || '').replace(/•/g, '&bull;');
+        if (photoEl && p.photo) photoEl.src = p.photo;
+        if (stat1) stat1.textContent = p.experience || '—';
+        if (stat2) stat2.textContent = p.qualification || '—';
+        if (stat3) stat3.textContent = p.institution || 'CPC';
+
+        // Update tab labels
+        const tab = document.querySelector('.founder-tab[data-founder="' + key + '"]');
+        if (tab && p.name) tab.textContent = p.name;
+
+        // Rebuild contact chips
+        const contactRow = document.getElementById('founderContacts-' + key);
+        if (contactRow) {
+            let html = '';
+            if (p.email) html += '<a href="mailto:' + p.email + '" class="founder-contact-chip"><i class="fas fa-envelope"></i><span>' + escapeHtml(p.email) + '</span></a>';
+            if (p.phone) html += '<a href="tel:' + p.phone.replace(/\s/g,'') + '" class="founder-contact-chip"><i class="fas fa-phone-alt"></i><span>' + escapeHtml(p.phone) + '</span></a>';
+            if (p.location) html += '<div class="founder-contact-chip"><i class="fas fa-map-marker-alt"></i><span>' + escapeHtml(p.location) + '</span></div>';
+            contactRow.innerHTML = html;
+        }
+
+        // Rebuild social bar
+        const socialBar = document.getElementById('founderSocials-' + key);
+        if (socialBar) {
+            let html = '';
+            if (p.facebook) html += '<a href="' + p.facebook + '" target="_blank" class="f-social fb" title="Facebook"><i class="fab fa-facebook-f"></i></a>';
+            if (p.instagram) html += '<a href="' + p.instagram + '" target="_blank" class="f-social ig" title="Instagram"><i class="fab fa-instagram"></i></a>';
+            if (p.whatsapp) html += '<a href="' + p.whatsapp + '" target="_blank" class="f-social wa" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>';
+            if (p.emailLink) html += '<a href="' + p.emailLink + '" class="f-social em" title="Email"><i class="fas fa-envelope"></i></a>';
+            if (p.youtube) html += '<a href="' + p.youtube + '" target="_blank" class="f-social yt" title="YouTube"><i class="fab fa-youtube"></i></a>';
+            socialBar.innerHTML = html;
+        }
+    });
+}
+
+// ====== RENDER FOUNDERS ADMIN ======
+function renderFoundersAdmin(editor) {
+    const body = editor.querySelector('.modal-body');
+    const title = editor.querySelector('.modal-header h2') || document.getElementById('editorTitle');
+    if (title) title.innerText = 'Manage Founders';
+
+    const profiles = getFounderProfiles();
+
+    function buildForm(key, label) {
+        const p = profiles[key] || {};
+        return `
+        <div class="founder-admin-section">
+            <h3 style="margin:0 0 12px;color:var(--text-primary);font-size:15px;">
+                <span style="color:#E94560;">●</span> ${label}
+            </h3>
+            <div class="form-group"><label>Name</label><input id="fdr_${key}_name" value="${escapeHtml(p.name || '')}" placeholder="Full name"></div>
+            <div class="form-group"><label>Role / Designation</label><input id="fdr_${key}_role" value="${escapeHtml(p.role || '')}" placeholder="e.g. Founder & Director"></div>
+            <div class="form-group"><label>Tagline</label><input id="fdr_${key}_tagline" value="${escapeHtml(p.tagline || '')}" placeholder="Short bio / tagline"></div>
+            <div class="form-group"><label>Experience</label><input id="fdr_${key}_exp" value="${escapeHtml(p.experience || '')}" placeholder="e.g. 8+"></div>
+            <div class="form-group"><label>Qualification</label><input id="fdr_${key}_qual" value="${escapeHtml(p.qualification || '')}" placeholder="e.g. B.Tech"></div>
+            <div class="form-group"><label>Institution</label><input id="fdr_${key}_inst" value="${escapeHtml(p.institution || '')}" placeholder="e.g. CPC"></div>
+            <div class="form-group"><label>Email</label><input id="fdr_${key}_email" type="email" value="${escapeHtml(p.email || '')}" placeholder="email@example.com"></div>
+            <div class="form-group"><label>Phone</label><input id="fdr_${key}_phone" value="${escapeHtml(p.phone || '')}" placeholder="+91 ..."></div>
+            <div class="form-group"><label>Location</label><input id="fdr_${key}_location" value="${escapeHtml(p.location || '')}" placeholder="City, Area"></div>
+            <div class="form-group"><label>Photo</label><input id="fdr_${key}_photo" type="file" accept="image/*">
+                ${p.photo ? '<div style="margin-top:6px;"><img src="' + p.photo + '" style="width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid #E94560;"></div>' : ''}
+            </div>
+            <div class="form-group"><label>Facebook URL</label><input id="fdr_${key}_fb" value="${escapeHtml(p.facebook || '')}" placeholder="https://facebook.com/..."></div>
+            <div class="form-group"><label>Instagram URL</label><input id="fdr_${key}_ig" value="${escapeHtml(p.instagram || '')}" placeholder="https://instagram.com/..."></div>
+            <div class="form-group"><label>WhatsApp URL</label><input id="fdr_${key}_wa" value="${escapeHtml(p.whatsapp || '')}" placeholder="https://wa.me/91..."></div>
+            <div class="form-group"><label>Email Link</label><input id="fdr_${key}_em" value="${escapeHtml(p.emailLink || '')}" placeholder="mailto:..."></div>
+            <div class="form-group"><label>YouTube URL</label><input id="fdr_${key}_yt" value="${escapeHtml(p.youtube || '')}" placeholder="https://youtube.com/..."></div>
+        </div>`;
+    }
+
+    body.innerHTML = `
+        <div style="padding:20px;">
+            <form id="foundersAdminForm">
+                <div class="founder-admin-grid">
+                    ${buildForm('abhishek', 'Abhishek Raj')}
+                    ${buildForm('avinash', 'Avinash Kumar')}
+                </div>
+                <div style="display:flex;gap:10px;margin-top:18px;">
+                    <button type="submit" class="btn-action" style="flex:1;">💾 Save Both Profiles</button>
+                    <button type="button" class="btn-action" style="flex:0;background:#888;" onclick="resetFounderProfiles()">↺ Reset</button>
+                </div>
+            </form>
+        </div>
+    `;
+
+    document.getElementById('foundersAdminForm').onsubmit = async function(e) {
+        e.preventDefault();
+        const profiles = getFounderProfiles();
+        for (const key of ['abhishek', 'avinash']) {
+            profiles[key] = profiles[key] || {};
+            profiles[key].name = document.getElementById('fdr_' + key + '_name').value.trim();
+            profiles[key].role = document.getElementById('fdr_' + key + '_role').value.trim();
+            profiles[key].tagline = document.getElementById('fdr_' + key + '_tagline').value.trim();
+            profiles[key].experience = document.getElementById('fdr_' + key + '_exp').value.trim();
+            profiles[key].qualification = document.getElementById('fdr_' + key + '_qual').value.trim();
+            profiles[key].institution = document.getElementById('fdr_' + key + '_inst').value.trim();
+            profiles[key].email = document.getElementById('fdr_' + key + '_email').value.trim();
+            profiles[key].phone = document.getElementById('fdr_' + key + '_phone').value.trim();
+            profiles[key].location = document.getElementById('fdr_' + key + '_location').value.trim();
+            profiles[key].facebook = document.getElementById('fdr_' + key + '_fb').value.trim();
+            profiles[key].instagram = document.getElementById('fdr_' + key + '_ig').value.trim();
+            profiles[key].whatsapp = document.getElementById('fdr_' + key + '_wa').value.trim();
+            profiles[key].emailLink = document.getElementById('fdr_' + key + '_em').value.trim();
+            profiles[key].youtube = document.getElementById('fdr_' + key + '_yt').value.trim();
+
+            // Handle photo upload
+            const photoInput = document.getElementById('fdr_' + key + '_photo');
+            if (photoInput && photoInput.files && photoInput.files[0]) {
+                try { profiles[key].photo = await readFileAsDataURL(photoInput.files[0]); } catch(err) {}
+            }
+        }
+        saveFounderProfiles(profiles);
+        loadFounderProfiles();
+        showToast('Founder profiles saved!');
+        logAdminActivity('update', 'Updated founder profiles');
+    };
+
+    window.resetFounderProfiles = function() {
+        if (!confirm('Reset both founder profiles to defaults?')) return;
+        localStorage.removeItem('founder_profiles');
+        loadFounderProfiles();
+        showToast('Profiles reset to defaults');
+        renderFoundersAdmin(editor);
+    };
+
+    editor.classList.add('active');
+}

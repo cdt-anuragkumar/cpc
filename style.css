@@ -468,7 +468,7 @@ body.dark-mode .toppers-nav-card:hover {
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 28px; /* increased gap between cards */
     align-items: stretch;
-    margin: 0 auto 20px; /* center the grid */
+    margin: 20px auto 20px; /* center the grid */
     width: calc(100% - 48px);
     max-width: 1260px; /* keeps layout tidy on wide screens */
     padding: 0 12px;
@@ -2212,7 +2212,8 @@ body.dark-mode .admin-search-wrap:focus-within .admin-search-icon {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px 10px;
+    justify-content: center;
+    padding: 6px 10px 10px;
     background: rgba(255,255,255,0.06);
     border-radius: 10px;
     flex: 1;
@@ -5008,7 +5009,7 @@ body.dark-mode .headline-item {
     backdrop-filter: blur(20px) saturate(1.8);
     -webkit-backdrop-filter: blur(20px) saturate(1.8);
     border-radius: 18px;
-    padding: 18px 28px;
+    padding: 10px 28px;
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -6279,6 +6280,115 @@ body.dark-mode .about-subtitle {
     animation: fdrModalPop 0.45s cubic-bezier(0.34,1.56,0.64,1) backwards;
 }
 
+/* Founder Switch Tabs */
+.founder-switch-tabs {
+    display: flex;
+    position: relative;
+    background: linear-gradient(135deg, rgba(26,26,46,0.06), rgba(233,69,96,0.04));
+    border-bottom: 1px solid rgba(26,26,46,0.08);
+    padding: 6px 6px 0;
+}
+
+body.dark-mode .founder-switch-tabs {
+    background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(233,69,96,0.06));
+    border-bottom-color: rgba(255,255,255,0.08);
+}
+
+.founder-tab {
+    flex: 1;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+    border-radius: 12px 12px 0 0;
+}
+
+.founder-tab:hover {
+    color: var(--text-primary);
+    background: rgba(233,69,96,0.05);
+}
+
+.founder-tab.active {
+    color: #E94560;
+    background: rgba(233,69,96,0.08);
+}
+
+.founder-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    right: 20%;
+    height: 3px;
+    background: linear-gradient(90deg, #E94560, #ff6a00);
+    border-radius: 3px 3px 0 0;
+}
+
+body.dark-mode .founder-tab.active {
+    color: #ff6a7a;
+    background: rgba(233,69,96,0.12);
+}
+
+/* Founder Profile Panels */
+.founder-profile-panel {
+    display: none;
+    animation: fdrFadeIn 0.35s ease;
+}
+
+.founder-profile-panel.active {
+    display: block;
+}
+
+/* Founder Admin Grid */
+.founder-admin-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.founder-admin-section {
+    background: var(--bg-secondary);
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.founder-admin-section .form-group {
+    margin-bottom: 8px;
+}
+
+.founder-admin-section .form-group label {
+    display: block;
+    margin-bottom: 3px;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.founder-admin-section .form-group input {
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 13px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .founder-admin-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .founder-modal-header {
     background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 40%, #E94560 100%) !important;
     padding: 16px 22px !important;
@@ -7024,14 +7134,20 @@ body.dark-mode .sidebar-item-arrow {
 
 /* ===== MOBILE RESPONSIVENESS ===== */
 @media (max-width: 768px) {
+    /* Prevent horizontal overflow */
+    body {
+        overflow-x: hidden;
+    }
+
     /* Header */
     .header {
-        padding: 8px 12px;
+        padding: 8px 10px;
         position: relative;
     }
 
     .header-right {
-        gap: 8px;
+        gap: 6px;
+        flex-shrink: 0;
     }
 
     .nav-links-desktop {
@@ -7043,48 +7159,76 @@ body.dark-mode .sidebar-item-arrow {
     }
 
     .user-profile {
-        padding: 6px;
+        padding: 5px;
+        border-radius: 50%;
+    }
+
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+
+    .toppers-nav-card {
+        padding: 5px;
     }
 
     .logo-text-small h2 {
-        font-size: 14px;
+        font-size: 13px;
     }
 
     .logo-text-small p {
-        font-size: 7px;
-        letter-spacing: 1px;
+        font-size: 6px;
+        letter-spacing: 0.8px;
     }
 
     .logo-icon-small {
-        width: 38px;
-        height: 38px;
-        font-size: 13px;
+        width: 34px;
+        height: 34px;
+        font-size: 12px;
         border-radius: 10px;
     }
 
     .header-left {
-        gap: 10px;
+        gap: 8px;
+        min-width: 0;
+        flex: 1;
+    }
+
+    .logo-header {
+        min-width: 0;
+    }
+
+    .logo-text-small {
+        min-width: 0;
+    }
+
+    .menu-btn {
+        font-size: 20px;
+        padding: 4px;
+        flex-shrink: 0;
     }
 
     .theme-toggle-btn {
-        width: 38px;
-        height: 38px;
-        font-size: 16px;
+        width: 32px;
+        height: 32px;
+        font-size: 15px;
     }
 
     /* Content */
     .content {
-        padding: 12px;
+        padding: 10px;
+        overflow-x: hidden;
     }
 
     /* Quick Actions Grid */
     .quick-actions {
         grid-template-columns: repeat(3, 1fr);
-        column-gap: 14px;
+        column-gap: 10px;
         row-gap: 8px;
         width: 100%;
         padding: 0;
-        margin: 0 0 14px;
+        margin: 8px 0 12px;
     }
 
     .action-card {
@@ -7092,7 +7236,7 @@ body.dark-mode .sidebar-item-arrow {
         max-width: unset;
         height: auto;
         min-height: 0;
-        padding: 10px 6px 8px;
+        padding: 8px 4px 6px;
         border-radius: 12px;
         gap: 0;
         animation: none;
@@ -7108,17 +7252,17 @@ body.dark-mode .sidebar-item-arrow {
 
     .action-card-top {
         flex-direction: column;
-        gap: 4px;
+        gap: 3px;
         align-items: center;
         text-align: center;
         margin-bottom: 0;
     }
 
     .action-card .icon-large {
-        width: 36px;
-        height: 36px;
-        border-radius: 10px;
-        font-size: 18px;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        font-size: 16px;
         line-height: 1;
         display: flex;
         align-items: center;
@@ -7126,7 +7270,7 @@ body.dark-mode .sidebar-item-arrow {
     }
 
     .action-card-content h3 {
-        font-size: 9px;
+        font-size: 8px;
         line-height: 1.2;
         font-weight: 700;
     }
@@ -7144,12 +7288,16 @@ body.dark-mode .sidebar-item-arrow {
         flex-direction: column;
         gap: 10px;
         margin-top: 4px;
+        width: 100%;
+        overflow: hidden;
     }
 
     .middlebox-section {
         flex: unset;
-        max-height: 280px;
+        max-height: 240px;
         animation: none !important;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .middlebox-section:hover {
@@ -7158,8 +7306,10 @@ body.dark-mode .sidebar-item-arrow {
 
     .headlines-section {
         flex: unset;
-        max-height: 230px;
+        max-height: 200px;
         animation: none !important;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .headlines-section:hover {
@@ -7192,7 +7342,10 @@ body.dark-mode .sidebar-item-arrow {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 6px;
-        padding: 10px 12px;
+        padding: 8px 10px;
+        margin-top: 12px;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .teacher-section h4 {
@@ -7411,37 +7564,38 @@ body.dark-mode .sidebar-item-arrow {
     }
 
     .user-avatar {
-        width: 34px;
-        height: 34px;
-        font-size: 13px;
+        width: 30px;
+        height: 30px;
+        font-size: 11px;
     }
 
     /* Content */
     .content {
-        padding: 8px;
+        padding: 6px;
+        overflow-x: hidden;
     }
 
     /* Quick Actions - keep 3 columns on small screens */
     .quick-actions {
         grid-template-columns: repeat(3, 1fr);
-        column-gap: 12px;
+        column-gap: 8px;
         row-gap: 6px;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
     }
 
     .action-card {
-        padding: 8px 4px 6px;
+        padding: 6px 3px 5px;
         min-height: 0;
     }
 
     .action-card .icon-large {
-        width: 30px;
-        height: 30px;
-        font-size: 15px;
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
     }
 
     .action-card-content h3 {
-        font-size: 8px;
+        font-size: 7px;
     }
 
     .action-card .btn-action {
@@ -7744,7 +7898,7 @@ body.dark-mode .sidebar-item-arrow {
 
 .attendance-menu-card {
     background: linear-gradient(165deg, #0D0D1A 0%, #151528 40%, #1A1A2E 100%);
-    border: 1.5px solid rgba(233,69,96,0.2);
+    border: 1.5px solid rgba(255,255,255,0.25);
     border-radius: 28px;
     padding: 52px 44px 44px;
     width: 100%;
@@ -7949,7 +8103,7 @@ body.dark-mode .attendance-menu-card p {
     background: linear-gradient(135deg, #0D0D1A 0%, #1A1A2E 50%, #2D2D44 100%);
     color: #fff;
     box-shadow: 0 8px 24px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(255,255,255,0.25);
 }
 
 .attendance-menu-btn.mark-attendance:hover {

@@ -31,8 +31,7 @@
         <div class="header-right">
             <div class="nav-links-desktop">
                 <a href="#" class="nav-link active" onclick="showSection('home'); return false;" title="Home"><i class="fas fa-home"></i></a>
-                <a href="#" class="nav-link" onclick="openModal('contact'); return false;" title="Contact"><i class="fas fa-phone-alt"></i></a>
-                <button class="nav-link theme-toggle-btn" id="themeToggle" onclick="toggleDarkMode()" title="Toggle Dark Mode"><i class="fas fa-eye"></i></button>
+                <button class="nav-link theme-toggle-btn" id="themeToggle" onclick="toggleDarkMode()" title="Toggle Dark Mode"><i class="fas fa-sun"></i></button>
             </div>
             
             <div class="user-profile founder-card" onclick="openModal('founder')">
@@ -162,7 +161,7 @@
                     </div>
                     <div class="action-card warning" onclick="mobileCardClick(this)">
                         <div class="action-card-top">
-                            <div class="icon-large">⚡</div>
+                            <div class="icon-large">🛡️</div>
                             <div class="action-card-content">
                                 <h3>Admin</h3>
                                 <p>Administration</p>
@@ -759,6 +758,16 @@
                         <span class="tile-badge" id="badge-contacts"></span>
                         <div class="tile-arrow"><i class="fas fa-chevron-right"></i></div>
                     </div>
+                    <div class="admin-tile" data-section="founders" onclick="openSectionEditor('founders')">
+                        <div class="tile-accent" style="--tile-color: #f6d365;"></div>
+                        <div class="tile-icon-wrap" style="--tile-color: #f6d365;"><i class="fas fa-user-tie"></i></div>
+                        <div class="tile-body">
+                            <div class="tile-title">Founders</div>
+                            <div class="tile-desc">Manage founder profiles</div>
+                        </div>
+                        <span class="tile-badge" id="badge-founders"></span>
+                        <div class="tile-arrow"><i class="fas fa-chevron-right"></i></div>
+                    </div>
                     <div class="admin-tile" data-section="admin" onclick="openSectionEditor('admin')">
                         <div class="tile-accent" style="--tile-color: #764ba2;"></div>
                         <div class="tile-icon-wrap" style="--tile-color: #764ba2;"><i class="fas fa-cogs"></i></div>
@@ -889,54 +898,67 @@
                 <button class="close-btn" onclick="closeModal('founder')">&times;</button>
             </div>
             <div class="modal-body founder-modal-body">
-                <div class="founder-hero">
-                    <div class="founder-photo-wrap">
-                        <img src="founderr.png" alt="Abhishek Raj" class="founder-photo-img">
-                        <div class="founder-photo-ring"></div>
+                <!-- Founder Switch Tabs -->
+                <div class="founder-switch-tabs">
+                    <button class="founder-tab active" data-founder="abhishek" onclick="switchFounder('abhishek')">Abhishek Raj</button>
+                    <button class="founder-tab" data-founder="avinash" onclick="switchFounder('avinash')">Avinash Kumar</button>
+                    <div class="founder-tab-indicator"></div>
+                </div>
+
+                <!-- Abhishek Raj Profile -->
+                <div class="founder-profile-panel active" id="founderPanel-abhishek">
+                    <div class="founder-hero">
+                        <div class="founder-photo-wrap">
+                            <img src="founderr.png" alt="Abhishek Raj" class="founder-photo-img" id="founderPhoto-abhishek">
+                            <div class="founder-photo-ring"></div>
+                        </div>
+                        <div class="founder-hero-info">
+                            <h2 class="founder-name-new" id="founderName-abhishek">Abhishek Raj</h2>
+                            <span class="founder-badge" id="founderBadge-abhishek">Founder & Director</span>
+                            <p class="founder-tagline" id="founderTagline-abhishek">Senior Physics Teacher &bull; Mentor of IITians, NITians, Medicos &amp; Board Toppers &bull; 8+ Years in Education</p>
+                        </div>
                     </div>
-                    <div class="founder-hero-info">
-                        <h2 class="founder-name-new">Abhishek Raj</h2>
-                        <span class="founder-badge">Founder & Director</span>
-                        <p class="founder-tagline">Senior Physics Teacher &bull; Mentor of IITians, NITians, Medicos &amp; Board Toppers &bull; 8+ Years in Education</p>
+                    <div class="founder-stats-row">
+                        <div class="founder-stat"><span class="stat-num" id="founderStat1-abhishek">8+</span><span class="stat-label">Years Exp</span></div>
+                        <div class="founder-stat"><span class="stat-num" id="founderStat2-abhishek">B.Tech</span><span class="stat-label">Qualification</span></div>
+                        <div class="founder-stat"><span class="stat-num" id="founderStat3-abhishek">CPC</span><span class="stat-label">Institution</span></div>
+                    </div>
+                    <div class="founder-contact-row" id="founderContacts-abhishek">
+                        <a href="mailto:abhishek12796@icloud.com" class="founder-contact-chip"><i class="fas fa-envelope"></i><span>abhishek12796@icloud.com</span></a>
+                        <a href="tel:+918863994647" class="founder-contact-chip"><i class="fas fa-phone-alt"></i><span>+91 8863994647</span></a>
+                        <div class="founder-contact-chip"><i class="fas fa-map-marker-alt"></i><span>Bhakharuan More, Daudnagar</span></div>
+                    </div>
+                    <div class="founder-social-bar" id="founderSocials-abhishek">
+                        <a href="https://facebook.com/abhishek.raj.437105" target="_blank" class="f-social fb" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/abhishek_educator/" target="_blank" class="f-social ig" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://wa.me/918863994647" target="_blank" class="f-social wa" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="mailto:abhishekcpcdaudnagar@gmail.com" class="f-social em" title="Email"><i class="fas fa-envelope"></i></a>
+                        <a href="https://www.youtube.com/channel/UCgSmfxQrwCaNEtGHbWRcPfA" target="_blank" class="f-social yt" title="YouTube"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
 
-                <div class="founder-stats-row">
-                    <div class="founder-stat">
-                        <span class="stat-num">8+</span>
-                        <span class="stat-label">Years Exp</span>
+                <!-- Avinash Kumar Profile -->
+                <div class="founder-profile-panel" id="founderPanel-avinash">
+                    <div class="founder-hero">
+                        <div class="founder-photo-wrap">
+                            <img src="avinash.png" alt="Avinash Kumar" class="founder-photo-img" id="founderPhoto-avinash">
+                            <div class="founder-photo-ring"></div>
+                        </div>
+                        <div class="founder-hero-info">
+                            <h2 class="founder-name-new" id="founderName-avinash">Avinash Kumar</h2>
+                            <span class="founder-badge" id="founderBadge-avinash">Co-Founder</span>
+                            <p class="founder-tagline" id="founderTagline-avinash">Dedicated Educator &bull; Academic Coordinator</p>
+                        </div>
                     </div>
-                    <div class="founder-stat">
-                        <span class="stat-num">B.Tech</span>
-                        <span class="stat-label">Qualification</span>
+                    <div class="founder-stats-row">
+                        <div class="founder-stat"><span class="stat-num" id="founderStat1-avinash">—</span><span class="stat-label">Years Exp</span></div>
+                        <div class="founder-stat"><span class="stat-num" id="founderStat2-avinash">—</span><span class="stat-label">Qualification</span></div>
+                        <div class="founder-stat"><span class="stat-num" id="founderStat3-avinash">CPC</span><span class="stat-label">Institution</span></div>
                     </div>
-                    <div class="founder-stat">
-                        <span class="stat-num">CPC</span>
-                        <span class="stat-label">Institution</span>
+                    <div class="founder-contact-row" id="founderContacts-avinash">
+                        <div class="founder-contact-chip"><i class="fas fa-map-marker-alt"></i><span>Daudnagar</span></div>
                     </div>
-                </div>
-
-                <div class="founder-contact-row">
-                    <a href="mailto:abhishek12796@icloud.com" class="founder-contact-chip">
-                        <i class="fas fa-envelope"></i>
-                        <span>abhishek12796@icloud.com</span>
-                    </a>
-                    <a href="tel:+918863994647" class="founder-contact-chip">
-                        <i class="fas fa-phone-alt"></i>
-                        <span>+91 8863994647</span>
-                    </a>
-                    <div class="founder-contact-chip">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Bhakharuan More, Daudnagar</span>
-                    </div>
-                </div>
-
-                <div class="founder-social-bar">
-                    <a href="https://facebook.com/abhishek.raj.437105" target="_blank" class="f-social fb" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://www.instagram.com/abhishek_educator/" target="_blank" class="f-social ig" title="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="https://wa.me/918863994647" target="_blank" class="f-social wa" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                    <a href="mailto:abhishekcpcdaudnagar@gmail.com" class="f-social em" title="Email"><i class="fas fa-envelope"></i></a>
-                    <a href="https://www.youtube.com/channel/UCgSmfxQrwCaNEtGHbWRcPfA" target="_blank" class="f-social yt" title="YouTube"><i class="fab fa-youtube"></i></a>
+                    <div class="founder-social-bar" id="founderSocials-avinash"></div>
                 </div>
             </div>
         </div>
